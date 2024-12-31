@@ -160,6 +160,10 @@ body {
 
 /* Container */
 .table-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     padding: 20px;
     background-color: #fff;
     border-radius: 10px;
@@ -181,14 +185,21 @@ body {
     border-collapse: collapse;
     font-size: 14px;
     text-align: left;
+    border-radius: 20px;
+}
+
+.data-table th, .data-table td {
+    white-space: nowrap;
+    text-align: center;
+    align-items: center;
 }
 
 .data-table thead th {
-    background-color: #f4f4f4;
+    background-color: #f0f0f0; /* Warna abu-abu header */
     color: #333;
     padding: 12px;
-    border-bottom: 2px solid #ddd;
     text-transform: uppercase;
+    border-bottom: 2px solid #ddd; /* Garis bawah header */
 }
 
 .data-table tbody td {
@@ -197,12 +208,16 @@ body {
     color: #555;
 }
 
-.data-table tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
+.data-table td {
+    text-align: center; /* Pusatkan teks dalam sel */
+}
+
+.data-table tbody tr {
+    background-color: #fff; /* Warna putih untuk semua baris */
 }
 
 .data-table tbody tr:hover {
-    background-color: #f1f1f1;
+    background-color: #f9f9f9; /* Efek hover abu-abu muda */
 }
 
 /* Action Buttons */
