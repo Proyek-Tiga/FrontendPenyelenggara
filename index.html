@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penyelenggara | Data Request</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/index.css">
+
+    <!-- Font Chewy -->
+    <link href="https://fonts.googleapis.com/css2?family=Chewy&display=swap" rel="stylesheet">
+    <!-- Font Crimson Pro -->
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-guitar"></i>
+                <h2>AuSa Beats</h2>
+            </div>
+            <nav class="menu">
+                <a href="index.html" class="menu-item active"><i class="fas fa-home"></i> Beranda</a>
+                <a href="datakonser.html" class="menu-item"><i class="fas fa-music"></i> Konser</a>
+                <a href="pembeli.html" class="menu-item"><i class="fas fa-users"></i> Pembeli</a>
+                <a href="transaksi.html" class="menu-item"><i class="fas fa-receipt"></i> Transaksi</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="custom-header">
+                <div class="search-container">
+                    <i class="fa fa-search search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Cari...">
+                </div>
+                <div class="user-container">
+                    <i class="fa fa-user user-icon"></i>
+                    <span>Nama Pengguna</span>
+                </div>
+            </header>
+
+            <section class="content">
+                <!-- Table Section -->
+                <div class="table-container">
+                    <h2>Data Request</h2>
+                    <button class="btn add" id="btnTambahRequest" aria-label="Tambah Request">Tambah Request</button>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Tanggal</th>
+                                <th>Kapasitas Orang</th>
+                                <th>Lokasi</th>
+                                <th>Harga Tiket</th>
+                                <th>Kategori</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>2024-12-30</td>
+                                <td>500</td>
+                                <td>Jakarta</td>
+                                <td>Presale 1</td>
+                                <td>Dewasa</td>
+                                <td>
+                                    <button class="btn edit">Edit</button>
+                                    <button class="btn delete">Hapus</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>2024-12-31</td>
+                                <td>300</td>
+                                <td>Bandung</td>
+                                <td>Early Bird</td>
+                                <td>Anak-anak</td>
+                                <td>
+                                    <button class="btn edit">Edit</button>
+                                    <button class="btn delete">Hapus</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Popup Form Tambah Request -->
+            <div id="popupTambahRequest" class="popup">
+                <form id="formTambahRequest">
+                    <input type="date" id="tanggal" required>
+                    <input type="number" id="kapasitas" required>
+                    <input type="text" id="lokasi" required>
+                    <select id="harga" required>
+                        <option value="early_bird">Early Bird</option>
+                        <option value="presale_1">Presale 1</option>
+                        <option value="presale_2">Presale 2</option>
+                    </select>
+                    <select id="kategori" required>
+                        <option value="anak-anak">Anak-anak</option>
+                        <option value="dewasa">Dewasa</option>
+                    </select>
+                    <button type="submit">Simpan</button>
+                </form>
+                <button id="btnBatalTambahRequest">Batal</button>
+            </div>            
+
+    <!-- Link to external JS file -->
+    <script src="js/index.js"></script>
+</body>
+
+</html>
