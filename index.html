@@ -86,29 +86,40 @@
             </section>
 
             <!-- Popup Form Tambah Konser -->
-            <div class="popup" id="popupTambahKonser" style="display: none;">
-                <div class="popup-content">
-                    <h3>Tambah Data Request</h3>
-                    <form id="formTambahKonser">
-                        <label for="kapasitas">Kapasitas Orang:</label>
-                        <input type="number" id="kapasitas" name="kapasitas" placeholder="Masukkan kapasitas" required>
-                        
-                        <label for="lokasi">Lokasi:</label>
-                        <input type="text" id="lokasi" name="lokasi" placeholder="Masukkan lokasi konser" required>
-                        
-                        <label for="harga">Harga Tiket (Tingkatan):</label>
-                        <textarea id="harga" name="harga" placeholder="Masukkan harga dengan tingkatan, misalnya: VIP: 500000, Reguler: 300000" required></textarea>
-                        
-                        <div class="popup-actions">
-                            <button type="submit" class="btn save" aria-label="Simpan">Simpan</button>
-                            <button type="button" class="btn cancel" id="btnBatalTambah" aria-label="Batal">Batal</button>
-                        </div>
-                    </form>
+<div class="popup" id="popupTambahKonser" style="display: none;">
+    <div class="popup-content">
+        <h3>Tambah Data Request</h3>
+        <form id="formTambahKonser">
+            <!-- Kapasitas -->
+            <label for="kapasitas">Kapasitas Orang:</label>
+            <input type="number" id="kapasitas" name="kapasitas" placeholder="Masukkan kapasitas" required>
+
+            <!-- Lokasi -->
+            <label for="lokasi">Lokasi:</label>
+            <input type="text" id="lokasi" name="lokasi" placeholder="Masukkan lokasi konser" required>
+
+            <!-- Pilihan Tiket -->
+            <label for="pilihanTiket">Pilihan Tiket:</label>
+            <div id="pilihanTiketContainer">
+                <div class="tiket-row">
+                    <input type="text" name="tingkatan_tiket[]" placeholder="Masukkan tingkatan tiket (contoh: VIP)" required>
+                    <input type="number" name="harga_tiket[]" placeholder="Masukkan harga tiket (contoh: 500000)" required>
+                    <button type="button" class="btn tambah-tiket" id="btnTambahTiket">+</button>
                 </div>
             </div>
-        </main>
-    </div>
 
+            <!-- Jenis Bank -->
+            <label for="jenisBank">Jenis Bank:</label>
+            <input type="text" id="jenisBank" name="jenis_bank" placeholder="Masukkan jenis bank" required>
+
+            <!-- Actions -->
+            <div class="popup-actions">
+                <button type="submit" class="btn save" aria-label="Simpan">Simpan</button>
+                <button type="button" class="btn cancel" id="btnBatalTambah" aria-label="Batal">Batal</button>
+            </div>
+        </form>
+    </div>
+</div>
     <!-- Link to external JS file -->
     <script src="js/index.js"></script>
 </body>
