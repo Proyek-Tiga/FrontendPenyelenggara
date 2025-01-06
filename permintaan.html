@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin | Ausa Beats Lokasi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/permintaan.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Font Chewy -->
+    <link href="https://fonts.googleapis.com/css2?family=Chewy&display=swap" rel="stylesheet">
+    <!-- Font Crimson Pro -->
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-guitar"></i>
+                <h2>AuSa Beats</h2>
+            </div>
+            <nav class="menu">
+                <a href="index.html" class="menu-item"><i class="fas fa-home"></i> Dasbor</a>
+                <a href="permintaan.html" class="menu-item active"><i class="fa-solid fa-bell"></i> Permintaan</a>
+                <a href="datakonser.html" class="menu-item"><i class="fas fa-music"></i> Konser</a>
+                <a href="transaksi.html" class="menu-item"><i class="fas fa-receipt"></i> Transaksi</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="custom-header">
+                <div class="search-container">
+                    <i class="fa fa-search search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Cari...">
+                </div>
+                <div class="user-container">
+                    <i class="fa fa-user user-icon"></i>
+                    <span>Nama Pengguna</span>
+                    <div class="dropdown">
+                        <i class="fa fa-caret-down dropdown-icon"></i>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-item">
+                                <i class="fa fa-sign-out"></i>
+                                <span>Keluar</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+
+            <section class="content">
+                <!-- Table Section -->
+                <div class="table-container">
+                    <h2>Data Permintaan Lokasi</h2>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Lokasi</th>
+                                <th>Kapasitas Orang</th>
+                                <th>Pilihan Tiket</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="row-1">
+                                <td>1</td>
+                                <td>Auditorium ULBI</td>
+                                <td>500</td>
+                                <td>
+                                    <ul>
+                                        <li>VIP - Rp 200,000</li>
+                                        <li>Reguler - Rp 100,000</li>
+                                    </ul>
+                                </td>
+                                <td id="status-1">Ditunda</td>
+                                <td>
+                                    <select onchange="updateStatus(1, this.value)">
+                                        <option value="Ditunda" selected>Ditunda</option>
+                                        <option value="Disetujui">Disetujui</option>
+                                        <option value="Ditolak">Ditolak</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr id="row-2">
+                                <td>2</td>
+                                <td>Balai Kota</td>
+                                <td>1,000</td>
+                                <td>
+                                    <ul>
+                                        <li>VIP - Rp 300,000</li>
+                                        <li>Reguler - Rp 150,000</li>
+                                    </ul>
+                                </td>
+                                <td id="status-2">Ditunda</td>
+                                <td>
+                                    <select onchange="updateStatus(2, this.value)">
+                                        <option value="Ditunda" selected>Ditunda</option>
+                                        <option value="Disetujui">Disetujui</option>
+                                        <option value="Ditolak">Ditolak</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Link to external JS file -->
+    <!-- <script src="js/index.js"></script> -->
+    <script src="js/permintaan.js"></script>
+</body>
+
+</html>
