@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin | Ausa Beats Lokasi</title>
+    <title>Penyelenggara | Ausa Beats Permintaan</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="css/permintaan.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -57,6 +57,7 @@
                 <!-- Table Section -->
                 <div class="table-container">
                     <h2>Data Permintaan Lokasi</h2>
+                    <button class="btn-request" id="requestBtn">Tambah Permintaan</button>
                     <table class="data-table">
                         <thead>
                             <tr>
@@ -65,7 +66,6 @@
                                 <th>Kapasitas Orang</th>
                                 <th>Pilihan Tiket</th>
                                 <th>Status</th>
-                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -80,13 +80,6 @@
                                     </ul>
                                 </td>
                                 <td id="status-1">Ditunda</td>
-                                <td>
-                                    <select onchange="updateStatus(1, this.value)">
-                                        <option value="Ditunda" selected>Ditunda</option>
-                                        <option value="Disetujui">Disetujui</option>
-                                        <option value="Ditolak">Ditolak</option>
-                                    </select>
-                                </td>
                             </tr>
                             <tr id="row-2">
                                 <td>2</td>
@@ -99,18 +92,40 @@
                                     </ul>
                                 </td>
                                 <td id="status-2">Ditunda</td>
-                                <td>
-                                    <select onchange="updateStatus(2, this.value)">
-                                        <option value="Ditunda" selected>Ditunda</option>
-                                        <option value="Disetujui">Disetujui</option>
-                                        <option value="Ditolak">Ditolak</option>
-                                    </select>
-                                </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </section>
+
+            <!-- Pop-Up Form -->
+            <div class="popup" id="popupForm">
+                <div class="popup-content">
+                    <h3>Tambah Permintaan</h3>
+                    <form id="requestForm">
+                        <div class="form-row">
+                            <label for="location">Lokasi</label>
+                            <input type="text" id="location" required placeholder="Masukkan Lokasi">
+                        </div>
+                        <div class="form-row">
+                            <label for="capacity">Kapasitas</label>
+                            <input type="number" id="capacity" required placeholder="Masukkan Kapasitas">
+                        </div>
+                        <div class="form-row">
+                            <label for="ticket">Pilihan Tiket</label>
+                            <button type="button" id="addTicketBtn" class="add-ticket-btn">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                        </div>
+                        <!-- Tambahkan ini untuk menampung tiket -->
+                        <div id="ticketContainer" class="ticket-container"></div>
+                        <div class="form-row buttons">
+                            <button type="button" id="submitBtn" class="btn-submit">Kirim</button>
+                            <button type="button" id="closeBtn" class="btn-close">Tutup</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
         </main>
     </div>
