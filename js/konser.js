@@ -45,13 +45,31 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Kosongkan tbody sebelum memasukkan data baru
             tbody.innerHTML = '';
 
+            if (userConcerts.length === 0) {
+                // Jika tidak ada konser, tampilkan pesan di dalam tbody
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 10px; font-weight: bold;">
+                            Belum ada konser yang ditambahkan.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
             userConcerts.forEach((concert, index) => {
+                const formattedDate = new Date(concert.tanggal_konser).toLocaleDateString('id-ID', {
+                    day: '2-digit',
+                    month: 'long',
+                    year: 'numeric'
+                });
+
                 const row = document.createElement('tr');
 
                 row.innerHTML = `
                     <td>${index + 1}</td>
                     <td><img src="${concert.image}" alt="Gambar konser ${concert.nama_konser}" width="80"></td>
-                    <td>${concert.tanggal_konser}</td>
+                    <td>${formattedDate}</td>
                     <td>${concert.nama_konser}</td>
                     <td>${concert.lokasi_name}</td>
                     <td>${concert.jumlah_tiket}</td>
@@ -59,7 +77,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <td>${concert.status}</td>
                 <td>
                     <button class="btn edit" data-id="${concert.id}">Edit</button>
-                    <button class="btn delete" data-id="${concert.id}">Hapus</button>
                 </td>
                 `;
 
