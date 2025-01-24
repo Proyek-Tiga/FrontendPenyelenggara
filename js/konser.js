@@ -45,18 +45,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Kosongkan tbody sebelum memasukkan data baru
             tbody.innerHTML = '';
 
-            if (userConcerts.length === 0) {
-                // Jika tidak ada konser, tampilkan pesan di dalam tbody
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="8" style="text-align: center; padding: 10px; font-weight: bold;">
-                            Belum ada konser yang ditambahkan.
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-
             userConcerts.forEach((concert, index) => {
                 const formattedDate = new Date(concert.tanggal_konser).toLocaleDateString('id-ID', {
                     day: '2-digit',
