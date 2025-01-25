@@ -7,9 +7,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.location.href = "proyek-tiga.github.io";
         return;
     }
-    // const addConcertBtn = document.getElementById("add-concert-btn");
-    // const addConcertModal = document.getElementById("add-concert-modal");
-    // const closeModal = document.querySelector("#add-concert-modal .close");
+    // Ambil elemen
+    const addConcertBtn = document.getElementById("btnTambahKonser");
+    const addConcertModal = document.getElementById("add-concert-modal");
+    const closeModal = addConcertModal.querySelector(".close");
+    const addConcertForm = document.getElementById("add-concert-form");
+    const lokasiDropdown = document.getElementById("concert-location");
     const tbody = document.querySelector('.data-table tbody');
 
     // Fungsi untuk decode token dan mendapatkan user_id
@@ -76,7 +79,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <td>Rp ${concert.harga.toLocaleString('id-ID')}</td>
                     <td>${concert.status}</td>
                 <td>
-                    <button class="btn edit" data-id="${concert.id}">Edit</button>
+                    <button class="btn edit" data-id="${concert.id}">Detail</button>
                 </td>
                 `;
 
@@ -88,6 +91,83 @@ document.addEventListener('DOMContentLoaded', async () => {
             alert('Gagal memuat data konser.');
         }
     }
+
+    // Tampilkan popup tambah konser
+    addConcertBtn.addEventListener("click", () => {
+        addConcertModal.style.display = "block";
+        loadLokasi(); // Load lokasi saat popup dibuka
+    });
+
+    // Tutup popup
+    closeModal.addEventListener("click", () => {
+        addConcertModal.style.display = "none";
+    });
+
+    // Tutup modal jika klik di luar modal
+    window.addEventListener("click", (event) => {
+        if (event.target === addConcertModal) {
+            addConcertModal.style.display = "none";
+        }
+    });
+
+    // Fungsi untuk load lokasi konser
+    async function loadLokasi() {
+        try {
+            const response = await fetch(API_LOKASI, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (!response.ok) throw new Error(`Gagal mengambil lokasi`);
+
+            const lokasiData = await response.json();
+            lokasiDropdown.innerHTML = `<option value="" disabled selected>Pilih Lokasi</option>`;
+            lokasiData.forEach(lokasi => {
+                lokasiDropdown.innerHTML += `<option value="${lokasi.lokasi_id}">${lokasi.lokasi_name}</option>`;
+            });
+        } catch (error) {
+            console.error("Error memuat lokasi:", error);
+        }
+    }
+
+    // Fungsi untuk menambah konser
+    addConcertForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const namaKonser = document.getElementById("concert-name").value;
+        const tanggalKonser = document.getElementById("concert-date").value;
+        const lokasiId = lokasiDropdown.value;
+        const hargaTiket = document.getElementById("ticket-price").value;
+        const konserImage = document.getElementById("concert-image").files[0];
+
+        if (!konserImage) {
+            alert("Harap unggah gambar konser.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("user_id", currentUserId);
+        formData.append("lokasi_id", lokasiId);
+        formData.append("nama_konser", namaKonser);
+        formData.append("tanggal_konser", tanggalKonser);
+        formData.append("harga", hargaTiket);
+        formData.append("image", konserImage);
+
+        try {
+            const response = await fetch(API_URL, {
+                method: "POST",
+                headers: { 'Authorization': `Bearer ${token}` },
+                body: formData
+            });
+
+            if (!response.ok) throw new Error(`Gagal menambahkan konser`);
+
+            alert("Konser berhasil ditambahkan!");
+            addConcertModal.style.display = "none";
+            fetchConcerts(); // Update daftar konser
+        } catch (error) {
+            console.error("Error menambahkan konser:", error);
+            alert("Terjadi kesalahan saat menambahkan konser.");
+        }
+    });
 
     fetchConcerts();
 });

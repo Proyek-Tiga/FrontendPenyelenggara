@@ -50,7 +50,7 @@
                             </li>
                         </ul>
                     </div>
-                </div>  
+                </div>
             </header>
 
             <section class="content">
@@ -108,38 +108,33 @@
                 </div>
             </section>
 
-            <!-- Popup Form Tambah Konser -->
-            <div class="popup" id="popupTambahKonser">
-                <div class="popup-content">
-                    <h3>Tambah Konser</h3>
-                    <form id="formTambahKonser">
-                        <label for="tanggal">Tanggal:</label>
-                        <input type="date" id="tanggal" name="tanggal" required>
+            <!-- Pop-up Tambah Konser -->
+            <div id="add-concert-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h2>Tambah Konser</h2>
+                    <form id="add-concert-form">
+                        <label for="concert-name">Nama Konser</label>
+                        <input type="text" id="concert-name" name="concert_name" required>
 
-                        <label for="namaKonser">Nama Konser:</label>
-                        <input type="text" id="namaKonser" name="namaKonser" placeholder="Masukkan nama konser" required>
+                        <label for="concert-date">Tanggal Konser</label>
+                        <input type="datetime-local" id="concert-date" name="concert_date" required>
 
-                        <label for="lokasi">Lokasi:</label>
-                        <input type="text" id="lokasi" name="lokasi" placeholder="Masukkan lokasi konser" required>
-
-                        <label for="jumlahTiket">Jumlah Tiket:</label>
-                        <input type="number" id="jumlahTiket" name="jumlahTiket" placeholder="Masukkan jumlah tiket" required>
-
-                        <label for="harga">Harga:</label>
-                        <input type="number" id="harga" name="harga" placeholder="Masukkan harga tiket" required>
-
-                        <label for="penyelenggara">Nama Penyelenggara:</label>
-                        <input type="text" id="penyelenggara" name="penyelenggara" placeholder="Masukkan nama penyelenggara" required>
-
-                        <label for="status">Status:</label>
-                        <select id="status" name="status" required>
-                            <option value="belum_di_acc" selected>Belum di ACC</option>
-                        </select>
-
-                        <div class="popup-actions">
-                            <button type="submit" class="btn save" aria-label="Simpan">Simpan</button>
-                            <button type="button" class="btn cancel" id="btnBatalTambah" aria-label="Batal">Batal</button>
+                        <label for="concert-location">Lokasi</label>
+                        <div class="dropdown-container">
+                            <select id="concert-location">
+                                <option value="" disabled selected>Pilih Lokasi</option>
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
                         </div>
+
+                        <label for="ticket-price">Harga Tiket</label>
+                        <input type="number" id="ticket-price" name="ticket_price" required>
+
+                        <label for="concert-image">Gambar Konser</label>
+                        <input type="file" id="concert-image" name="concert_image" accept="image/*" required>
+
+                        <button type="submit" class="btn submit">Tambah</button>
                     </form>
                 </div>
             </div>
@@ -153,19 +148,22 @@
                         <input type="date" id="tanggal" name="tanggal" required>
 
                         <label for="namaKonser">Nama Konser:</label>
-                        <input type="text" id="namaKonser" name="namaKonser" placeholder="Masukkan nama konser" required>
+                        <input type="text" id="namaKonser" name="namaKonser" placeholder="Masukkan nama konser"
+                            required>
 
                         <label for="lokasi">Lokasi:</label>
                         <input type="text" id="lokasi" name="lokasi" placeholder="Masukkan lokasi konser" required>
 
                         <label for="jumlahTiket">Jumlah Tiket:</label>
-                        <input type="number" id="jumlahTiket" name="jumlahTiket" placeholder="Masukkan jumlah tiket" required>
+                        <input type="number" id="jumlahTiket" name="jumlahTiket" placeholder="Masukkan jumlah tiket"
+                            required>
 
                         <label for="harga">Harga:</label>
                         <input type="number" id="harga" name="harga" placeholder="Masukkan harga tiket" required>
 
                         <label for="penyelenggara">Nama Penyelenggara:</label>
-                        <input type="text" id="penyelenggara" name="penyelenggara" placeholder="Masukkan nama penyelenggara" required>
+                        <input type="text" id="penyelenggara" name="penyelenggara"
+                            placeholder="Masukkan nama penyelenggara" required>
 
                         <label for="status">Status:</label>
                         <select id="status" name="status" disabled>
@@ -174,7 +172,8 @@
 
                         <div class="popup-actions">
                             <button type="submit" class="btn save" aria-label="Simpan">Simpan</button>
-                            <button type="button" class="btn cancel" id="btnBatalTambah" aria-label="Batal">Batal</button>
+                            <button type="button" class="btn cancel" id="btnBatalTambah"
+                                aria-label="Batal">Batal</button>
                         </div>
                     </form>
                 </div>
