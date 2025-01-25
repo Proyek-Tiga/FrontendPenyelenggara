@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Tampilkan popup tambah konser
     addConcertBtn.addEventListener("click", () => {
-        addConcertModal.style.display = "block";
+        addConcertModal.classList.add("show");
         loadLokasi(); // Load lokasi saat popup dibuka
     });
 
@@ -104,6 +104,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // Tutup modal jika klik di luar modal
+    window.addEventListener("click", (event) => {
+        if (event.target === addConcertModal) {
+            addConcertModal.style.display = "none";
+        }
+    });
+
+    // Close modal on clicking outside
     window.addEventListener("click", (event) => {
         if (event.target === addConcertModal) {
             addConcertModal.style.display = "none";
