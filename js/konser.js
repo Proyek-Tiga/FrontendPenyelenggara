@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
-            const concerts = await response.json();
+            concerts = await response.json(); // Gunakan variabel global
 
             // Filter konser berdasarkan user_id
             const userConcerts = concerts.filter(concert => concert.user_id === currentUserId);
@@ -214,7 +214,22 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.body.insertAdjacentHTML("beforeend", modalHTML);
 
-    // Fungsi untuk menampilkan modal dengan detail konser
+    // **Tambahkan event listener setelah konser dimuat**
+    document.addEventListener("click", function (event) {
+        if (event.target.classList.contains("detail")) {
+            const konserId = event.target.dataset.id;
+            const concert = concerts.find(c => c.konser_id === konserId);
+
+            if (!concert) {
+                console.error("Konser tidak ditemukan:", konserId);
+                alert("Konser tidak ditemukan!");
+                return;
+            }
+
+            showConcertDetail(concert);
+        }
+    });
+
     function showConcertDetail(concert) {
         document.getElementById("modal-nama").textContent = concert.nama_konser;
         document.getElementById("modal-tanggal").textContent = new Date(concert.tanggal_konser).toLocaleDateString('id-ID', {
@@ -229,19 +244,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         document.getElementById("concert-detail-modal").style.display = "block";
     }
-
-    // Event listener untuk tombol detail
-    document.addEventListener("click", function (event) {
-        if (event.target.classList.contains("detail")) {
-            const konserId = event.target.dataset.id;
-            const concert = concerts.find(c => c.konser_id === konserId);
-            if (concert) {
-                showConcertDetail(concert);
-            } else {
-                console.error("Konser tidak ditemukan:", konserId);
-            }
-        }
-    });
 
     // Tutup modal saat tombol close diklik
     document.getElementById("close-modal").addEventListener("click", function () {
