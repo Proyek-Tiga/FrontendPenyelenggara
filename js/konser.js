@@ -218,7 +218,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // **Tambahkan event listener setelah konser dimuat**
     document.addEventListener("click", function (event) {
         if (event.target.classList.contains("detail")) {
-            const konserId = Number(event.target.dataset.id); // Konversi ke number
+            const konserId = event.target.dataset.id; // Jangan dikonversi ke number
             console.log("Tombol Detail diklik, ID konser:", konserId); // Debugging
 
             if (isNaN(konserId)) {
@@ -227,7 +227,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return;
             }
 
-            const concert = concerts.find(c => String(c.konser_id) === String(konserId));
+            const concert = concerts.find(c => c.konser_id === konserId);
             if (!concert) {
                 console.error("Konser tidak ditemukan:", konserId);
                 alert("Konser tidak ditemukan!");
