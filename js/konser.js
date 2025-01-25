@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
+    let concerts = []; // Tambahkan ini di luar fetchConcerts()
     const API_URL = 'https://tiket-backend-theta.vercel.app/api/konser';
     const API_LOKASI = 'https://tiket-backend-theta.vercel.app/api/lokasi';
     const token = localStorage.getItem("authToken");
@@ -229,12 +230,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById("concert-detail-modal").style.display = "block";
     }
 
-    // Tambahkan event listener pada tombol "Detail"
+    // Event listener untuk tombol detail
     document.addEventListener("click", function (event) {
         if (event.target.classList.contains("detail")) {
             const konserId = event.target.dataset.id;
             const concert = concerts.find(c => c.konser_id === konserId);
-            if (concert) showConcertDetail(concert);
+            if (concert) {
+                showConcertDetail(concert);
+            } else {
+                console.error("Konser tidak ditemukan:", konserId);
+            }
         }
     });
 
