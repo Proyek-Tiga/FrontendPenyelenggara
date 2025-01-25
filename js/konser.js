@@ -62,6 +62,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             userConcerts.forEach((concert, index) => {
+                console.log("Menambahkan tombol Detail untuk konser:", concert.konser_id); // Debugging
                 const formattedDate = new Date(concert.tanggal_konser).toLocaleDateString('id-ID', {
                     day: '2-digit',
                     month: 'long',
@@ -218,8 +219,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.addEventListener("click", function (event) {
         if (event.target.classList.contains("detail")) {
             const konserId = Number(event.target.dataset.id); // Konversi ke number
-            const concert = concerts.find(c => c.konser_id === konserId);
+            console.log("Tombol Detail diklik, ID konser:", konserId); // Debugging
 
+            if (isNaN(konserId)) {
+                console.error("ID konser tidak valid:", event.target.dataset.id);
+                alert("Terjadi kesalahan: ID konser tidak valid.");
+                return;
+            }
+
+            const concert = concerts.find(c => String(c.konser_id) === String(konserId));
             if (!concert) {
                 console.error("Konser tidak ditemukan:", konserId);
                 alert("Konser tidak ditemukan!");
