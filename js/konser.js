@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <td>Rp ${concert.harga.toLocaleString('id-ID')}</td>
                     <td>${concert.status}</td>
                 <td>
-                    <button class="btn edit" data-id="${concert.id}">Detail</button>
+                    <button class="btn detail" data-id="${concert.konser_id}">Detail</button>
                 </td>
                 `;
 
@@ -193,4 +193,60 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     fetchConcerts();
+
+    const modalHTML = `
+    <div id="concert-detail-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" id="close-modal">&times;</span>
+            <h2>Detail Konser</h2>
+            <img id="modal-image" src="" alt="Gambar Konser" width="200">
+            <p><strong>Nama Konser:</strong> <span id="modal-nama"></span></p>
+            <p><strong>Tanggal:</strong> <span id="modal-tanggal"></span></p>
+            <p><strong>Lokasi:</strong> <span id="modal-lokasi"></span></p>
+            <p><strong>Jumlah Tiket:</strong> <span id="modal-tiket"></span></p>
+            <p><strong>Harga:</strong> Rp <span id="modal-harga"></span></p>
+            <p><strong>Status:</strong> <span id="modal-status"></span></p>
+            <p><strong>Penyelenggara:</strong> <span id="modal-penyelenggara"></span></p>
+        </div>
+    </div>
+`;
+
+    document.body.insertAdjacentHTML("beforeend", modalHTML);
+
+    // Fungsi untuk menampilkan modal dengan detail konser
+    function showConcertDetail(concert) {
+        document.getElementById("modal-nama").textContent = concert.nama_konser;
+        document.getElementById("modal-tanggal").textContent = new Date(concert.tanggal_konser).toLocaleDateString('id-ID', {
+            day: '2-digit', month: 'long', year: 'numeric'
+        });
+        document.getElementById("modal-lokasi").textContent = concert.lokasi_name;
+        document.getElementById("modal-tiket").textContent = concert.jumlah_tiket;
+        document.getElementById("modal-harga").textContent = concert.harga.toLocaleString('id-ID');
+        document.getElementById("modal-status").textContent = concert.status;
+        document.getElementById("modal-penyelenggara").textContent = concert.user_name;
+        document.getElementById("modal-image").src = concert.image;
+
+        document.getElementById("concert-detail-modal").style.display = "block";
+    }
+
+    // Tambahkan event listener pada tombol "Detail"
+    document.addEventListener("click", function (event) {
+        if (event.target.classList.contains("detail")) {
+            const konserId = event.target.dataset.id;
+            const concert = concerts.find(c => c.konser_id === konserId);
+            if (concert) showConcertDetail(concert);
+        }
+    });
+
+    // Tutup modal saat tombol close diklik
+    document.getElementById("close-modal").addEventListener("click", function () {
+        document.getElementById("concert-detail-modal").style.display = "none";
+    });
+
+    // Tutup modal saat klik di luar modal
+    document.getElementById("concert-detail-modal").addEventListener("click", function (event) {
+        if (event.target === this) {
+            this.style.display = "none";
+        }
+    });
 });
