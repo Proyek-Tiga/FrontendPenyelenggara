@@ -126,9 +126,22 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (!response.ok) throw new Error(`Gagal mengambil lokasi`);
 
             const lokasiData = await response.json();
+            console.log("Data Lokasi:", lokasiData); // Debugging
+
+            // Ambil elemen dropdown lokasi
+            const lokasiDropdown = document.getElementById("concert-location");
+            if (!lokasiDropdown) {
+                console.error("Dropdown lokasi tidak ditemukan.");
+                return;
+            }
+
+            // Reset dropdown sebelum menambahkan opsi baru
             lokasiDropdown.innerHTML = `<option value="" disabled selected>Pilih Lokasi</option>`;
             lokasiData.forEach(lokasi => {
-                lokasiDropdown.innerHTML += `<option value="${lokasi.lokasi_id}">${lokasi.lokasi_name}</option>`;
+                const option = document.createElement("option");
+                option.value = lokasi.lokasi_id;
+                option.textContent = `${lokasi.lokasi} (Tiket: ${lokasi.tiket})`; // Sesuaikan dengan admin
+                lokasiDropdown.appendChild(option);
             });
         } catch (error) {
             console.error("Error memuat lokasi:", error);
@@ -141,7 +154,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const namaKonser = document.getElementById("concert-name").value;
         const tanggalKonser = document.getElementById("concert-date").value;
-        const lokasiId = lokasiDropdown.value;
+        const lokasiDropdown = document.getElementById("concert-location"); // Pastikan ada
+        const lokasiId = lokasiDropdown ? lokasiDropdown.value : null;
         const hargaTiket = document.getElementById("ticket-price").value;
         const konserImage = document.getElementById("concert-image").files[0];
 
@@ -168,8 +182,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (!response.ok) throw new Error(`Gagal menambahkan konser`);
 
             alert("Konser berhasil ditambahkan!");
-            addConcertModal.style.display = "none";
-            fetchConcerts(); // Update daftar konser
+            document.getElementById("add-concert-form").reset();
+            document.getElementById("add-concert-modal").style.display = "none";
+            loadLokasi(); // Perbarui dropdown lokasi
+            fetchConcerts(); // Refresh daftar konser
         } catch (error) {
             console.error("Error menambahkan konser:", error);
             alert("Terjadi kesalahan saat menambahkan konser.");
