@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // **Tambahkan event listener setelah konser dimuat**
     document.addEventListener("click", function (event) {
         if (event.target.classList.contains("detail")) {
-            const konserId = event.target.dataset.id;
+            const konserId = Number(event.target.dataset.id); // Konversi ke number
             const concert = concerts.find(c => c.konser_id === konserId);
 
             if (!concert) {
@@ -242,18 +242,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById("modal-penyelenggara").textContent = concert.user_name;
         document.getElementById("modal-image").src = concert.image;
 
-        document.getElementById("concert-detail-modal").style.display = "block";
+        // Menampilkan modal
+        const detailModal = document.getElementById("concert-detail-modal");
+        detailModal.style.display = "block";
     }
 
-    // Tutup modal saat tombol close diklik
+    // Event listener untuk tombol close
     document.getElementById("close-modal").addEventListener("click", function () {
         document.getElementById("concert-detail-modal").style.display = "none";
     });
 
-    // Tutup modal saat klik di luar modal
-    document.getElementById("concert-detail-modal").addEventListener("click", function (event) {
-        if (event.target === this) {
-            this.style.display = "none";
+    // Event listener agar modal tertutup jika klik di luar area modal
+    window.addEventListener("click", function (event) {
+        const detailModal = document.getElementById("concert-detail-modal");
+        if (event.target === detailModal) {
+            detailModal.style.display = "none";
         }
     });
 });
