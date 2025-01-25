@@ -221,13 +221,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             const konserId = event.target.dataset.id; // Jangan dikonversi ke number
             console.log("Tombol Detail diklik, ID konser:", konserId); // Debugging
 
-            if (isNaN(konserId)) {
-                console.error("ID konser tidak valid:", event.target.dataset.id);
-                alert("Terjadi kesalahan: ID konser tidak valid.");
+            if (!konserId) {
+                console.error("ID konser tidak ditemukan.");
+                alert("Terjadi kesalahan: ID konser tidak ditemukan.");
                 return;
             }
 
-            const concert = concerts.find(c => c.konser_id === konserId);
+            console.log("Daftar konser yang dimuat:", concerts);
+            const concert = concerts.find(c => c.konser_id.toString() === konserId);
+            console.log("Konser ditemukan:", concert);
+
             if (!concert) {
                 console.error("Konser tidak ditemukan:", konserId);
                 alert("Konser tidak ditemukan!");
