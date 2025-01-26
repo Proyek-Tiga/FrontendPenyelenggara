@@ -196,30 +196,32 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     fetchConcerts();
 
+    // Modal Detail
     const modalHTML = `
-    <div id="concert-detail-modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close" id="close-modal">&times;</span>
-            <h2>Detail Konser</h2>
-            <img id="modal-image" src="" alt="Gambar Konser" width="200">
-            <p><strong>Nama Konser:</strong> <span id="modal-nama"></span></p>
-            <p><strong>Tanggal:</strong> <span id="modal-tanggal"></span></p>
-            <p><strong>Lokasi:</strong> <span id="modal-lokasi"></span></p>
-            <p><strong>Jumlah Tiket:</strong> <span id="modal-tiket"></span></p>
-            <p><strong>Harga:</strong> Rp <span id="modal-harga"></span></p>
-            <p><strong>Status:</strong> <span id="modal-status"></span></p>
-            <p><strong>Penyelenggara:</strong> <span id="modal-penyelenggara"></span></p>
+        <div id="concert-detail-modal" class="concert-modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" id="close-modal">&times;</span>
+                <h2>Detail Konser</h2>
+                <img id="modal-image" src="" alt="Gambar Konser" width="200">
+                <p><strong>Nama Konser:</strong> <span id="modal-nama"></span></p>
+                <p><strong>Tanggal:</strong> <span id="modal-tanggal"></span></p>
+                <p><strong>Lokasi:</strong> <span id="modal-lokasi"></span></p>
+                <p><strong>Jumlah Tiket:</strong> <span id="modal-tiket"></span></p>
+                <p><strong>Harga:</strong> Rp <span id="modal-harga"></span></p>
+                <p><strong>Status:</strong> <span id="modal-status"></span></p>
+                <p><strong>Penyelenggara:</strong> <span id="modal-penyelenggara"></span></p>
+            </div>
         </div>
-    </div>
-`;
+    `;
 
     document.body.insertAdjacentHTML("beforeend", modalHTML);
+    const detailModal = document.getElementById("concert-detail-modal");
 
     // **Tambahkan event listener setelah konser dimuat**
     document.addEventListener("click", function (event) {
         if (event.target.classList.contains("detail")) {
-            const konserId = event.target.dataset.id; // Jangan dikonversi ke number
-            console.log("Tombol Detail diklik, ID konser:", konserId); // Debugging
+            const konserId = event.target.dataset.id;
+            console.log("Tombol Detail diklik, ID konser:", konserId);
 
             if (!konserId) {
                 console.error("ID konser tidak ditemukan.");
@@ -253,19 +255,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById("modal-penyelenggara").textContent = concert.user_name;
         document.getElementById("modal-image").src = concert.image;
 
-        // Menampilkan modal
-        const detailModal = document.getElementById("concert-detail-modal");
         detailModal.style.display = "block";
     }
 
     // Event listener untuk tombol close
     document.getElementById("close-modal").addEventListener("click", function () {
-        document.getElementById("concert-detail-modal").style.display = "none";
+        detailModal.style.display = "none";
     });
 
     // Event listener agar modal tertutup jika klik di luar area modal
     window.addEventListener("click", function (event) {
-        const detailModal = document.getElementById("concert-detail-modal");
         if (event.target === detailModal) {
             detailModal.style.display = "none";
         }
