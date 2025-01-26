@@ -255,7 +255,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById("modal-penyelenggara").textContent = concert.user_name;
         document.getElementById("modal-image").src = concert.image;
 
-        detailModal.style.display = "block";
+        detailModal.style.display = "flex"; // Menggunakan flex agar modal muncul di tengah
     }
 
     // Event listener untuk tombol close
