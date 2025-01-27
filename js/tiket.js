@@ -2,19 +2,20 @@ document.addEventListener("DOMContentLoaded", function () {
     const token = localStorage.getItem("authToken");
 
     if (!token) {
-        alert("Token tidak ditemukan. Harap login terlebih dahulu.");
+        alert('Token tidak ditemukan. Harap login terlebih dahulu');
         window.location.href = "proyek-tiga.github.io"; // Sesuaikan dengan halaman login
         return;
     }
 
+    // Fungsi untuk mengambil tiket dan memperbarui tabel
     async function fetchTiket() {
         try {
-            const response = await fetch("https://tiket-backend-theta.vercel.app/api/tiket-penyelenggara", {
+            const response = await fetch("http://localhost:5000/api/tiket-penyelenggara", {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
+                    "Content-Type": "application/json"
+                }
             });
 
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
@@ -45,23 +46,26 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    // Fungsi untuk membuka popup
     window.openPopup = function () {
         document.getElementById("popup").style.display = "flex";
         fetchKonser();
     };
 
+    // Fungsi untuk menutup popup
     window.closePopup = function () {
         document.getElementById("popup").style.display = "none";
     };
 
+    // Fungsi untuk mengambil konser berdasarkan user_id dari token
     async function fetchKonser() {
         try {
             const response = await fetch("https://tiket-backend-theta.vercel.app/api/konser", {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
+                    "Content-Type": "application/json"
+                }
             });
 
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
@@ -70,9 +74,9 @@ document.addEventListener("DOMContentLoaded", function () {
             const konserDropdown = document.getElementById("konser");
             konserDropdown.innerHTML = '<option value="">-- Pilih Konser --</option>';
 
-            konserList.forEach((konser) => {
+            konserList.forEach(konser => {
                 const option = document.createElement("option");
-                option.value = konser.id; // Pastikan ini UUID yang valid
+                option.value = konser.konser_id;
                 option.textContent = konser.nama_konser;
                 konserDropdown.appendChild(option);
             });
@@ -82,6 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    // Fungsi untuk menambahkan tiket
     document.querySelector(".btn-submit").addEventListener("click", async function (event) {
         event.preventDefault();
 
@@ -100,7 +105,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const tiketData = JSON.stringify({
             konser_id: konserId,
             nama_tiket: namaTiket,
-            harga: harga,
+            harga: harga
         });
 
         try {
@@ -108,15 +113,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json",
+                    "Content-Type": "application/json"
                 },
-                body: tiketData,
+                body: tiketData
             });
 
             const responseText = await response.text();
 
             if (!response.ok) {
-                console.error("Server response:", responseText);
                 throw new Error(`HTTP error! Status: ${response.status} - ${responseText}`);
             }
 
@@ -129,5 +133,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    // Panggil fetchTiket saat halaman dimuat
     fetchTiket();
+
 });
