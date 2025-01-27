@@ -63,16 +63,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
         modalContent.innerHTML = `
             <h2>Detail Transaksi</h2>
-            <p><strong>No. Tiket:</strong> ${transaksi.tiket_id}</p>
-            <p><strong>Nama Konser:</strong> ${transaksi.konser_name}</p>
-            <p><strong>Penyelenggara:</strong> ${transaksi.penyelenggara_name}</p>
-            <p><strong>Pembeli:</strong> ${transaksi.pembeli_name}</p>
-            <p><strong>Tanggal:</strong> ${new Date(transaksi.transaksi_date).toLocaleString()}</p>
-            <p><strong>Status:</strong> <span class="status ${transaksi.transaksi_status}">${transaksi.transaksi_status}</span></p>
-            <p><strong>QR Code:</strong></p>
-            <img src="${transaksi.qr_code}" alt="QR Code" width="150">
+            <div class="modal-content">
+                <p><strong>No. Tiket:</strong></p> <p>${transaksi.tiket_id}</p>
+                <p><strong>Nama Konser:</strong></p> <p>${transaksi.konser_name}</p>
+                <p><strong>Penyelenggara:</strong></p> <p>${transaksi.penyelenggara_name}</p>
+                <p><strong>Pembeli:</strong></p> <p>${transaksi.pembeli_name}</p>
+                <p><strong>Tanggal:</strong></p> <p>${new Date(transaksi.transaksi_date).toLocaleString()}</p>
+                <p><strong>Status:</strong></p> <p class="status ${transaksi.transaksi_status}">${transaksi.transaksi_status}</p>
+            </div>
+            <div class="qr-container">
+                <p><strong>QR Code:</strong></p>
+                <img src="${transaksi.qr_code}" alt="QR Code">
+            </div>
             <button class="close-modal">Tutup</button>
-        `;
+            `;
 
         modal.style.display = "flex";
 
