@@ -327,6 +327,7 @@ body {
     background: rgba(0, 0, 0, 0.5);
     justify-content: center;
     align-items: center;
+    font-family: "Poppins", sans-serif;
 }
 
 /* Kotak Modal */
@@ -376,8 +377,8 @@ body {
 }
 
 .status.settlement {
-    background: #2ecc71;
-    color: white;
+    background: #C9DDEE;
+    color: #27568B;
 }
 
 .status.pending {
@@ -407,7 +408,7 @@ body {
     display: block;
     width: 100%;
     padding: 10px;
-    background: #e74c3c;
+    background: #27568B;
     color: white;
     border: none;
     border-radius: 6px;
@@ -419,5 +420,5 @@ body {
 }
 
 .close-modal:hover {
-    background: #c0392b;
+    background: #47a1c4;
 }
