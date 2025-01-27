@@ -2,7 +2,7 @@ const token = localStorage.getItem("authToken");
 if (!token) {
     alert('Token tidak ditemukan. Harap login terlebih dahulu');
     window.location.href = "proyek-tiga.github.io/login"; // Ganti dengan halaman login
-    return;
+    return;  // Hapus return karena kita sudah melakukan redirect
 }
 
 // Fungsi untuk mendapatkan user_id dari token
