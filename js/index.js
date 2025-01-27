@@ -35,7 +35,7 @@ async function fetchTotalRequests() {
         });
 
         if (!response.ok) {
-            throw new Error("Gagal mengambil data request");
+            throw new Error(`Gagal mengambil data request. Status: ${response.status}`);
         }
 
         const data = await response.json();
@@ -49,14 +49,15 @@ async function fetchTotalRequests() {
 
         // Filter permintaan berdasarkan user_id (cek tipe data)
         const userRequests = data.filter(request => String(request.user_id) === String(userId));
-        console.log("Data permintaan sesuai user:", userRequests.length); // Debugging
+        console.log("Jumlah permintaan sesuai user:", userRequests.length); // Debugging
 
-        // Tampilkan jumlah permintaan di elemen yang benar
-        const requestElement = document.querySelector(".cards-container .card:nth-child(1) .card-info p strong");
-        if (requestElement) {
-            requestElement.textContent = userRequests.length;
+        // Pastikan elemen target ada sebelum mengubah teks
+        const requestElements = document.querySelectorAll(".cards-container .card .card-info p strong");
+        if (requestElements.length > 0) {
+            requestElements[0].textContent = userRequests.length; // Ubah jumlah permintaan pada card pertama
+            console.log("Jumlah permintaan berhasil diperbarui di UI");
         } else {
-            console.error("Elemen target tidak ditemukan");
+            console.error("Elemen target tidak ditemukan di DOM");
         }
 
     } catch (error) {
