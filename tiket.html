@@ -51,14 +51,15 @@
                             </li>
                         </ul>
                     </div>
-                </div>  
+                </div>
             </header>
 
             <section class="content">
                 <!-- Table Section -->
                 <div class="table-container">
-                    <h2>Data Permintaan Lokasi</h2>
-                    <button class="btn-request" id="requestBtn">Tambah Permintaan</button>
+                    <h2>Data Tiket</h2>
+                    <!-- Tombol untuk membuka popup -->
+                    <button class="btn-open-popup" onclick="openPopup()">Tambah Tiket</button>
                     <table class="data-table">
                         <thead>
                             <tr>
@@ -76,22 +77,34 @@
                 </div>
             </section>
 
-            <!-- Pop-Up Form -->
-            <div class="popup" id="popupForm">
-                <div class="popup-content">
-                    <h3>Tambah Permintaan</h3>
-                    <form id="requestForm">
-                        <div class="form-row">
-                            <label for="location">Lokasi</label>
-                            <input type="text" id="location" required placeholder="Masukkan Lokasi">
-                        </div>
-                        <div class="form-row">
-                            <label for="capacity">Kapasitas</label>
-                            <input type="number" id="capacity" required placeholder="Masukkan Kapasitas">
-                        </div>
-                        <div class="form-row buttons">
-                            <button type="button" id="submitBtn" class="btn-submit">Kirim</button>
-                            <button type="button" id="closeBtn" class="btn-close">Tutup</button>
+            <!-- Tombol untuk membuka popup -->
+            <button class="btn-open-popup" onclick="openPopup()">Tambah Tiket</button>
+
+            <!-- Popup Form -->
+            <div class="popup-overlay" id="popup">
+                <div class="popup-box">
+                    <h2>Tambah Tiket 🎟️</h2>
+                    <form>
+                        <!-- Dropdown Pilih Konser -->
+                        <label for="konser">Pilih Konser:</label>
+                        <select id="konser">
+                            <option value="">-- Pilih Konser --</option>
+                            <option value="990cefa4-c093-4298-bc5b-a6d30c863dd8">Konser Audy's Night</option>
+                            <option value="76e6a1a7-1d73-4b56-9b24-122a00c7a06b">Konser Happy Vibes</option>
+                        </select>
+
+                        <!-- Input Nama Tiket -->
+                        <label for="nama-tiket">Nama Tiket:</label>
+                        <input type="text" id="nama-tiket" placeholder="Masukkan nama tiket">
+
+                        <!-- Input Harga -->
+                        <label for="harga">Harga Tiket:</label>
+                        <input type="number" id="harga" placeholder="Masukkan harga tiket">
+
+                        <!-- Tombol Submit & Batal -->
+                        <div class="button-group">
+                            <button type="submit" class="btn-submit">Tambah</button>
+                            <button type="button" class="btn-cancel" onclick="closePopup()">Batal</button>
                         </div>
                     </form>
                 </div>
