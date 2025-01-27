@@ -7,29 +7,21 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-    // Panggil API untuk mendapatkan tiket berdasarkan user yang login
-    fetch("http://localhost:5000/api/tiket-penyelenggara", {
-        method: "GET",
-        headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json"
-        }
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            // Pastikan elemen tabel ada
-            const tableBody = document.querySelector(".data-table tbody");
-            if (!tableBody) {
-                console.error("Elemen tbody tidak ditemukan.");
-                return;
-            }
+    // Fungsi untuk mengambil tiket dan memperbarui tabel
+    async function fetchTiket() {
+        try {
+            const response = await fetch("http://localhost:5000/api/tiket-penyelenggara", {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            });
 
-            // Kosongkan isi tabel sebelum menambahkan data
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+            const data = await response.json();
+            const tableBody = document.querySelector(".data-table tbody");
             tableBody.innerHTML = "";
 
             if (data.length === 0) {
@@ -37,32 +29,104 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            // Looping data tiket dan menambahkannya ke tabel
             data.forEach((tiket, index) => {
                 const row = document.createElement("tr");
                 row.innerHTML = `
-                <td>${index + 1}</td>
-                <td>${tiket.nama_tiket}</td>
-                <td>${tiket.jumlah_tiket}</td>
-                <td>Rp ${tiket.harga.toLocaleString()}</td>
-                <td>${tiket.nama_konser}</td>
-            `;
+                    <td>${index + 1}</td>
+                    <td>${tiket.nama_tiket}</td>
+                    <td>${tiket.jumlah_tiket}</td>
+                    <td>Rp ${tiket.harga.toLocaleString()}</td>
+                    <td>${tiket.nama_konser}</td>
+                `;
                 tableBody.appendChild(row);
             });
-        })
-        .catch(error => {
+        } catch (error) {
             console.error("Error mengambil data tiket:", error);
             alert("Gagal mengambil data tiket. Silakan coba lagi.");
-        });
+        }
+    }
 
     // Fungsi untuk membuka popup
-    function openPopup() {
+    window.openPopup = function () {
         document.getElementById("popup").style.display = "flex";
-    }
+        fetchKonser();
+    };
 
     // Fungsi untuk menutup popup
-    function closePopup() {
+    window.closePopup = function () {
         document.getElementById("popup").style.display = "none";
+    };
+
+    // Fungsi untuk mengambil konser berdasarkan user_id dari token
+    async function fetchKonser() {
+        try {
+            const response = await fetch("https://tiket-backend-theta.vercel.app/api/konser", {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+            const konserList = await response.json();
+            const konserDropdown = document.getElementById("konser");
+            konserDropdown.innerHTML = '<option value="">-- Pilih Konser --</option>';
+
+            konserList.forEach(konser => {
+                const option = document.createElement("option");
+                option.value = konser.id;
+                option.textContent = konser.nama_konser;
+                konserDropdown.appendChild(option);
+            });
+        } catch (error) {
+            console.error("Error mengambil konser:", error);
+            alert("Gagal mengambil konser. Silakan coba lagi.");
+        }
     }
+
+    // Fungsi untuk menambahkan tiket
+    document.querySelector(".btn-submit").addEventListener("click", async function (event) {
+        event.preventDefault();
+
+        const konserId = document.getElementById("konser").value;
+        const namaTiket = document.getElementById("nama-tiket").value.trim();
+        const harga = parseInt(document.getElementById("harga").value);
+
+        if (!konserId || !namaTiket || isNaN(harga)) {
+            alert("Harap isi semua data dengan benar!");
+            return;
+        }
+
+        const tiketData = {
+            konser_id: konserId,
+            nama_tiket: namaTiket,
+            harga: harga
+        };
+
+        try {
+            const response = await fetch("https://tiket-backend-theta.vercel.app/api/tiket", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(tiketData)
+            });
+
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+            alert("Tiket berhasil ditambahkan!");
+            closePopup();
+            fetchTiket();
+        } catch (error) {
+            console.error("Error menambahkan tiket:", error);
+            alert("Gagal menambahkan tiket. Silakan coba lagi.");
+        }
+    });
+
+    // Panggil fetchTiket saat halaman dimuat
+    fetchTiket();
 
 });

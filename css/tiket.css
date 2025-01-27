@@ -358,27 +358,9 @@ body {
     opacity: 0.9;
 }
 
-/* Button Tambah Konser */
-.btn.add {
-    background-color: #007bff;
-    color: #fff;
-    padding: 10px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-bottom: 20px;
-}
-
-.btn.add:hover {
-    background-color: #0056b3;
-}
-
 /* Style untuk tombol open popup */
 .btn-open-popup {
-    background-color: #ffb6c1;
+    background-color: #007bff;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -386,9 +368,10 @@ body {
     cursor: pointer;
     font-size: 16px;
     transition: 0.3s;
+    margin-bottom: 10px;
 }
 .btn-open-popup:hover {
-    background-color: #ff8a9f;
+    background-color: #0056b3;
 }
 
 /* Overlay Popup */
