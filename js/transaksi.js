@@ -13,19 +13,19 @@ document.addEventListener("DOMContentLoaded", function () {
             "Content-Type": "application/json"
         }
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error("Gagal mengambil data transaksi");
-        }
-        return response.json();
-    })
-    .then(data => {
-        const tbody = document.querySelector(".data-table tbody");
-        tbody.innerHTML = "";
-        
-        data.forEach((transaksi, index) => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Gagal mengambil data transaksi");
+            }
+            return response.json();
+        })
+        .then(data => {
+            const tbody = document.querySelector(".data-table tbody");
+            tbody.innerHTML = "";
+
+            data.forEach((transaksi, index) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
                 <td>${index + 1}</td>
                 <td>${transaksi.tiket_id}</td>
                 <td>${new Date(transaksi.transaksi_date).toLocaleDateString()}</td>
@@ -39,11 +39,53 @@ document.addEventListener("DOMContentLoaded", function () {
                     </button>
                 </td>
             `;
-            tbody.appendChild(row);
+                tbody.appendChild(row);
+            });
+            // Tambahkan event listener ke semua tombol detail
+            document.querySelectorAll(".btn.detail").forEach(button => {
+                button.addEventListener("click", function () {
+                    const transaksiId = this.getAttribute("data-id");
+                    const transaksiDetail = data.find(t => t.transaksi_id === transaksiId);
+                    if (transaksiDetail) {
+                        showDetailModal(transaksiDetail);
+                    }
+                });
+            });
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("Terjadi kesalahan saat mengambil data transaksi");
         });
-    })
-    .catch(error => {
-        console.error("Error:", error);
-        alert("Terjadi kesalahan saat mengambil data transaksi");
-    });
+
+    function showDetailModal(transaksi) {
+        const modal = document.querySelector("#detailModal");
+        const modalContent = document.querySelector("#modalContent");
+
+        modalContent.innerHTML = `
+            <h2>Detail Transaksi</h2>
+            <p><strong>No. Tiket:</strong> ${transaksi.tiket_id}</p>
+            <p><strong>Nama Konser:</strong> ${transaksi.konser_name}</p>
+            <p><strong>Penyelenggara:</strong> ${transaksi.penyelenggara_name}</p>
+            <p><strong>Pembeli:</strong> ${transaksi.pembeli_name}</p>
+            <p><strong>Tanggal:</strong> ${new Date(transaksi.transaksi_date).toLocaleString()}</p>
+            <p><strong>Status:</strong> <span class="status ${transaksi.transaksi_status}">${transaksi.transaksi_status}</span></p>
+            <p><strong>QR Code:</strong></p>
+            <img src="${transaksi.qr_code}" alt="QR Code" width="150">
+            <button class="close-modal">Tutup</button>
+        `;
+
+        modal.style.display = "flex";
+
+        // Close modal event
+        document.querySelector(".close-modal").addEventListener("click", function () {
+            modal.style.display = "none";
+        });
+
+        // Klik di luar modal untuk menutup
+        window.onclick = function (event) {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        };
+    }
 });
