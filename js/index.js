@@ -2,7 +2,6 @@ const token = localStorage.getItem("authToken");
 if (!token) {
     alert('Token tidak ditemukan. Harap login terlebih dahulu');
     window.location.href = "proyek-tiga.github.io/login"; // Ganti dengan halaman login
-    // Hapus return karena kita sudah melakukan redirect
 }
 
 // Fungsi untuk mendapatkan user_id dari token
@@ -65,5 +64,96 @@ async function fetchTotalRequests() {
     }
 }
 
-// Panggil fungsi untuk memperbarui jumlah permintaan di dashboard
-document.addEventListener("DOMContentLoaded", fetchTotalRequests);
+// Fungsi untuk mengambil dan menghitung total konser sesuai user_id
+async function fetchTotalKonser() {
+    const userId = getUserIdFromToken();
+    if (!userId) {
+        console.error("User ID tidak ditemukan dalam token");
+        return;
+    }
+
+    try {
+        const response = await fetch("https://tiket-backend-theta.vercel.app/api/konser", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Gagal mengambil data konser. Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Data konser dari API:", data); // Debugging
+
+        if (!Array.isArray(data)) {
+            console.error("Data API konser bukan array:", data);
+            return;
+        }
+
+        const userKonser = data.filter(konser => String(konser.user_id) === String(userId));
+        console.log("Jumlah konser sesuai user:", userKonser.length); // Debugging
+
+        const konserElements = document.querySelectorAll(".cards-container .card .card-info p strong");
+        if (konserElements.length > 1) {
+            konserElements[1].textContent = userKonser.length; // Ubah jumlah konser pada card kedua
+            console.log("Jumlah konser berhasil diperbarui di UI");
+        }
+
+    } catch (error) {
+        console.error("Error fetching konser:", error);
+    }
+}
+
+// Fungsi untuk mengambil dan menghitung total transaksi sesuai user_id
+async function fetchTotalTransaksi() {
+    const userId = getUserIdFromToken();
+    if (!userId) {
+        console.error("User ID tidak ditemukan dalam token");
+        return;
+    }
+
+    try {
+        const response = await fetch("https://tiket-backend-theta.vercel.app/api/transaksi", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Gagal mengambil data transaksi. Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Data transaksi dari API:", data); // Debugging
+
+        if (!Array.isArray(data)) {
+            console.error("Data API transaksi bukan array:", data);
+            return;
+        }
+
+        const userTransaksi = data.filter(transaksi => String(transaksi.user_id) === String(userId));
+        console.log("Jumlah transaksi sesuai user:", userTransaksi.length); // Debugging
+
+        const transaksiElements = document.querySelectorAll(".cards-container .card .card-info p strong");
+        if (transaksiElements.length > 2) {
+            const totalTransaksi = userTransaksi.reduce((acc, transaksi) => acc + transaksi.amount, 0); // Total transaksi
+            transaksiElements[2].textContent = `Rp. ${totalTransaksi.toLocaleString()}`; // Ubah total transaksi pada card ketiga
+            console.log("Jumlah transaksi berhasil diperbarui di UI");
+        }
+
+    } catch (error) {
+        console.error("Error fetching transaksi:", error);
+    }
+}
+
+// Panggil fungsi untuk memperbarui jumlah permintaan, konser, dan transaksi di dashboard
+document.addEventListener("DOMContentLoaded", () => {
+    fetchTotalRequests();
+    fetchTotalKonser();
+    fetchTotalTransaksi();
+});
