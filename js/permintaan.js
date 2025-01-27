@@ -9,6 +9,26 @@ document.addEventListener("DOMContentLoaded", async function () {
         return;
     }
 
+    const popupForm = document.getElementById("popupForm");
+    const requestBtn = document.getElementById("requestBtn");
+    const closeBtn = document.getElementById("closeBtn");
+    const submitBtn = document.getElementById("submitBtn");
+    const locationInput = document.getElementById("location");
+    const capacityInput = document.getElementById("capacity");
+
+    // Sembunyikan popup form saat halaman dimuat
+    popupForm.style.display = "none";
+
+    // Fungsi untuk menampilkan popup
+    requestBtn.addEventListener("click", function () {
+        popupForm.style.display = "flex";
+    });
+
+    // Fungsi untuk menutup popup
+    closeBtn.addEventListener("click", function () {
+        popupForm.style.display = "none";
+    });
+
     // Fungsi untuk mendapatkan user_id dari token
     function getUserIdFromToken() {
         try {
