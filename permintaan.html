@@ -64,7 +64,6 @@
                                 <th>No</th>
                                 <th>Lokasi</th>
                                 <th>Kapasitas Orang</th>
-                                <th>Pilihan Tiket</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -73,25 +72,7 @@
                                 <td>1</td>
                                 <td>Auditorium ULBI</td>
                                 <td>500</td>
-                                <td>
-                                    <ul>
-                                        <li>VIP - Rp 200,000</li>
-                                        <li>Reguler - Rp 100,000</li>
-                                    </ul>
-                                </td>
                                 <td id="status-1">Ditunda</td>
-                            </tr>
-                            <tr id="row-2">
-                                <td>2</td>
-                                <td>Balai Kota</td>
-                                <td>1,000</td>
-                                <td>
-                                    <ul>
-                                        <li>VIP - Rp 300,000</li>
-                                        <li>Reguler - Rp 150,000</li>
-                                    </ul>
-                                </td>
-                                <td id="status-2">Ditunda</td>
                             </tr>
                         </tbody>
                     </table>
@@ -111,14 +92,6 @@
                             <label for="capacity">Kapasitas</label>
                             <input type="number" id="capacity" required placeholder="Masukkan Kapasitas">
                         </div>
-                        <div class="form-row">
-                            <label for="ticket">Pilihan Tiket</label>
-                            <button type="button" id="addTicketBtn" class="add-ticket-btn">
-                                <i class="fa fa-plus"></i>
-                            </button>
-                        </div>
-                        <!-- Tambahkan ini untuk menampung tiket -->
-                        <div id="ticketContainer" class="ticket-container"></div>
                         <div class="form-row buttons">
                             <button type="button" id="submitBtn" class="btn-submit">Kirim</button>
                             <button type="button" id="closeBtn" class="btn-close">Tutup</button>

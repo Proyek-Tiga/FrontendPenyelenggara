@@ -1,117 +1,76 @@
-// Fungsi untuk memperbarui status berdasarkan pilihan dropdown
-function updateStatus(id, status) {
-    const statusCell = document.getElementById(`status-${id}`);
-    const row = document.getElementById(`row-${id}`);
-
-    // Update status di tabel
-    statusCell.textContent = status;
-
-    // Ubah warna baris sesuai status
-    if (status === "Disetujui") {
-        row.style.backgroundColor = "#d4edda"; // Hijau terang
-    } else if (status === "Ditolak") {
-        row.style.backgroundColor = "#f8d7da"; // Merah terang
-    } else {
-        row.style.backgroundColor = ""; // Default
-    }
-
-    // Tambahkan logika untuk menyimpan perubahan ke backend jika diperlukan
-    alert(`Status permintaan ID ${id} telah diubah menjadi "${status}".`);
+const token = localStorage.getItem("authToken");
+if (!token) {
+    alert('Token tidak ditemukan. Harap login terlebih dahulu');
+    window.location.href = "proyek-tiga.github.io";
+    return;
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    const requestBtn = document.getElementById("requestBtn");
-    const popupForm = document.getElementById("popupForm");
-    const closeBtn = document.getElementById("closeBtn");
-    const ticketContainer = document.getElementById("ticketContainer");
-    const addTicketBtn = document.getElementById("addTicketBtn");
+document.addEventListener("DOMContentLoaded", async function () {
     const tableBody = document.querySelector(".data-table tbody");
-    let ticketIdCounter = 0;
-    let requestCounter = 2; // Mulai dari 2 karena tabel sudah memiliki 2 data
+    const apiUrl = "https://tiket-backend-theta.vercel.app/api/request";
 
-    // Show pop-up form
-    requestBtn.addEventListener("click", () => {
-        popupForm.style.display = "flex";
-    });
+    // Fungsi untuk mendapatkan user_id dari token
+    function getUserIdFromToken() {
+        const token = localStorage.getItem("token"); // Ambil token dari localStorage (sesuaikan dengan penyimpanan kamu)
+        if (!token) return null;
 
-    // Close pop-up form
-    closeBtn.addEventListener("click", () => {
-        popupForm.style.display = "none";
-    });
+        try {
+            const payload = JSON.parse(atob(token.split(".")[1])); // Dekode token JWT
+            return payload.user_id;
+        } catch (error) {
+            console.error("Error decoding token:", error);
+            return null;
+        }
+    }
 
-    // Add ticket row
-    addTicketBtn.addEventListener("click", () => {
-        ticketIdCounter++;
-        const ticketRow = document.createElement("div");
-        ticketRow.className = "ticket-row";
-        ticketRow.id = `ticket-row-${ticketIdCounter}`;
-
-        ticketRow.innerHTML = `
-            <input type="text" placeholder="Nama Pilihan Tiket" required />
-            <input type="number" placeholder="Harga Tiket" required />
-            <button type="button" class="remove-ticket-btn">
-                <i class="fa fa-minus"></i>
-            </button>
-        `;
-
-        // Remove ticket row
-        ticketRow.querySelector(".remove-ticket-btn").addEventListener("click", () => {
-            ticketContainer.removeChild(ticketRow);
-        });
-
-        ticketContainer.appendChild(ticketRow);
-    });
-
-    // Handle form submission
-    document.getElementById("submitBtn").addEventListener("click", () => {
-        const location = document.getElementById("location").value;
-        const capacity = document.getElementById("capacity").value;
-
-        const ticketRows = document.querySelectorAll(".ticket-row");
-        const tickets = Array.from(ticketRows).map(row => {
-            const name = row.children[0].value;
-            const price = row.children[1].value;
-            return { name, price };
-        });
-
-        console.log("Lokasi:", location);
-        console.log("Kapasitas:", capacity);
-        console.log("Pilihan Tiket:", tickets);
-
-        if (!location || !capacity || tickets.length === 0) {
-            alert("Semua kolom wajib diisi!");
+    async function fetchRequests() {
+        const userId = getUserIdFromToken();
+        if (!userId) {
+            console.error("User ID tidak ditemukan dalam token");
             return;
         }
 
-        // Increment request counter
-        requestCounter++;
+        try {
+            const response = await fetch(apiUrl, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("token")}` // Pastikan token dikirim jika dibutuhkan
+                }
+            });
 
-        // Create new table row
-        const newRow = document.createElement("tr");
-        newRow.id = `row-${requestCounter}`;
-        newRow.innerHTML = `
-            <td>${requestCounter}</td>
-            <td>${location}</td>
-            <td>${capacity}</td>
-            <td>
-                <ul>
-                    ${tickets.map(ticket => `<li>${ticket.name} - Rp ${ticket.price}</li>`).join("")}
-                </ul>
-            </td>
-            <td id="status-${requestCounter}">Ditunda</td>
-        `;
+            if (!response.ok) {
+                throw new Error("Gagal mengambil data request");
+            }
 
-        // Add new row to table
-        tableBody.appendChild(newRow);
+            const data = await response.json();
 
-        // Clear form inputs
-        document.getElementById("location").value = "";
-        document.getElementById("capacity").value = "";
-        ticketContainer.innerHTML = "";
+            // Filter data berdasarkan user_id
+            const filteredRequests = data.filter(request => request.user_id === userId);
 
-        // Close popup
-        popupForm.style.display = "none";
+            // Kosongkan tabel sebelum mengisi data baru
+            tableBody.innerHTML = "";
 
-        alert("Data berhasil ditambahkan ke tabel!");
-    });
+            if (filteredRequests.length === 0) {
+                tableBody.innerHTML = "<tr><td colspan='4'>Tidak ada permintaan lokasi</td></tr>";
+                return;
+            }
+
+            filteredRequests.forEach((request, index) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${request.nama_lokasi}</td>
+                        <td>${request.kapasitas}</td>
+                        <td>${request.status}</td>
+                    `;
+                tableBody.appendChild(row);
+            });
+        } catch (error) {
+            console.error("Error fetching requests:", error);
+        }
+    }
+
+    // Panggil fungsi untuk mengambil dan menampilkan data
+    fetchRequests();
 });
