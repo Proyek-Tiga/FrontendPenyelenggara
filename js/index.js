@@ -1,7 +1,7 @@
 const token = localStorage.getItem("authToken");
 if (!token) {
     alert('Token tidak ditemukan. Harap login terlebih dahulu');
-    window.location.href = "proyek-tiga.github.io";
+    window.location.href = "proyek-tiga.github.io/login"; // Ganti dengan halaman login
     return;
 }
 
@@ -47,11 +47,11 @@ async function fetchTotalRequests() {
             return;
         }
 
-        // Filter permintaan berdasarkan user_id (cek tipe data)
+        // Filter permintaan berdasarkan user_id
         const userRequests = data.filter(request => String(request.user_id) === String(userId));
         console.log("Jumlah permintaan sesuai user:", userRequests.length); // Debugging
 
-        // Pastikan elemen target ada sebelum mengubah teks
+        // Update jumlah permintaan pada card dashboard
         const requestElements = document.querySelectorAll(".cards-container .card .card-info p strong");
         if (requestElements.length > 0) {
             requestElements[0].textContent = userRequests.length; // Ubah jumlah permintaan pada card pertama
