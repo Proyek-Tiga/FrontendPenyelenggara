@@ -9,6 +9,7 @@ if (!token) {
 function getUserIdFromToken() {
     try {
         const payload = JSON.parse(atob(token.split(".")[1])); // Dekode token JWT
+        console.log("User ID dari token:", payload.user_id); // Debugging
         return payload.user_id;
     } catch (error) {
         console.error("Error decoding token:", error);
@@ -38,12 +39,25 @@ async function fetchTotalRequests() {
         }
 
         const data = await response.json();
+        console.log("Data permintaan dari API:", data); // Debugging
 
-        // Filter permintaan berdasarkan user_id
-        const userRequests = data.filter(request => request.user_id === userId);
+        // Pastikan data dalam array
+        if (!Array.isArray(data)) {
+            console.error("Data API bukan array:", data);
+            return;
+        }
 
-        // Tampilkan jumlah permintaan di dashboard
-        document.querySelector(".card-info p strong").textContent = userRequests.length;
+        // Filter permintaan berdasarkan user_id (cek tipe data)
+        const userRequests = data.filter(request => String(request.user_id) === String(userId));
+        console.log("Data permintaan sesuai user:", userRequests.length); // Debugging
+
+        // Tampilkan jumlah permintaan di elemen yang benar
+        const requestElement = document.querySelector(".cards-container .card:nth-child(1) .card-info p strong");
+        if (requestElement) {
+            requestElement.textContent = userRequests.length;
+        } else {
+            console.error("Elemen target tidak ditemukan");
+        }
 
     } catch (error) {
         console.error("Error fetching requests:", error);
