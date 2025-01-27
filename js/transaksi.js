@@ -1,62 +1,49 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const modal = document.getElementById('modal-edit-status');
-    const closeButton = modal.querySelector('.close');
-    const form = document.getElementById('edit-status-form');
-    const transactionIdField = document.getElementById('transaction-id');
-    const statusField = document.getElementById('status');
-    const ticketNoField = document.getElementById('ticket-no');
-    const transactionDateField = document.getElementById('transaction-date');
-    const concertNameField = document.getElementById('concert-name');
-    const customerNameField = document.getElementById('customer-name');
-    const ticketQuantityField = document.getElementById('ticket-quantity');
-    const totalAmountField = document.getElementById('total-amount');
-    const paymentProofImage = document.getElementById('payment-proof');
+document.addEventListener("DOMContentLoaded", function () {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+        alert('Token tidak ditemukan. Harap login terlebih dahulu');
+        window.location.href = "proyek-tiga.github.io";
+        return;
+    }
 
-    // Open Modal on Button Click
-    document.querySelectorAll('.btn.detail').forEach(button => {
-        button.addEventListener('click', () => {
-            const row = button.closest('tr');
-            const id = button.getAttribute('data-id');
-            const ticketNo = row.cells[1].textContent;
-            const transactionDate = row.cells[2].textContent;
-            const concertName = row.cells[3].textContent;
-            const customerName = row.cells[4].textContent;
-            const ticketQuantity = row.cells[5].textContent;
-            const totalAmount = row.cells[6].textContent;
-            const currentStatus = row.cells[8].textContent;
-            const qrCodeSrc = row.querySelector('img').src;
-
-            // Populate modal fields
-            transactionIdField.value = id;
-            ticketNoField.textContent = ticketNo;
-            transactionDateField.textContent = transactionDate;
-            concertNameField.textContent = concertName;
-            customerNameField.textContent = customerName;
-            ticketQuantityField.textContent = ticketQuantity;
-            totalAmountField.textContent = totalAmount;
-            paymentProofImage.src = qrCodeSrc;
-            statusField.value = currentStatus;
-
-            modal.style.display = 'block';
+    fetch("http://localhost:5000/api/transaksi-penyelenggara", {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Gagal mengambil data transaksi");
+        }
+        return response.json();
+    })
+    .then(data => {
+        const tbody = document.querySelector(".data-table tbody");
+        tbody.innerHTML = "";
+        
+        data.forEach((transaksi, index) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${transaksi.tiket_id}</td>
+                <td>${new Date(transaksi.transaksi_date).toLocaleDateString()}</td>
+                <td>${transaksi.konser_name}</td>
+                <td>${transaksi.pembeli_name}</td>
+                <td><img src="${transaksi.qr_code}" alt="QR Code" width="50"></td>
+                <td>${transaksi.transaksi_status}</td>
+                <td>
+                    <button class="btn detail" data-id="${transaksi.transaksi_id}">
+                        <i class="fas fa-info-circle"></i>
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(row);
         });
-    });
-
-    // Close Modal
-    closeButton.addEventListener('click', () => {
-        modal.style.display = 'none';
-    });
-
-    // Handle Form Submit
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const id = transactionIdField.value;
-        const newStatus = statusField.value;
-
-        // Update the table
-        const row = document.querySelector(`.btn.detail[data-id="${id}"]`).closest('tr');
-        row.cells[8].textContent = newStatus;
-
-        // Close Modal
-        modal.style.display = 'none';
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("Terjadi kesalahan saat mengambil data transaksi");
     });
 });
