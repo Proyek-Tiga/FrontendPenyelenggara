@@ -99,11 +99,11 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        const tiketData = {
+        const tiketData = JSON.stringify({
             konser_id: konserId,
             nama_tiket: namaTiket,
             harga: harga
-        };
+        });
 
         try {
             const response = await fetch("https://tiket-backend-theta.vercel.app/api/tiket", {
@@ -112,10 +112,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(tiketData)
+                body: tiketData
             });
 
-            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+            const responseText = await response.text();
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status} - ${responseText}`);
+            }
 
             alert("Tiket berhasil ditambahkan!");
             closePopup();
