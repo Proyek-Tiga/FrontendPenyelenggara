@@ -178,7 +178,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Ambil data konser dan set dropdown
             await fetchKonser(); // Memastikan konser terambil terlebih dahulu
-            document.getElementById("edit-konser").value = tiket.konser_id; // Pilih konser yang sesuai
+            const konserDropdown = document.getElementById("edit-konser"); // Pastikan ID yang digunakan benar
+            konserDropdown.value = tiket.konser_id; // Pilih konser yang sesuai
 
             // Simpan ID tiket yang sedang diedit
             document.getElementById("edit-popup").dataset.tiketId = tiketId;
