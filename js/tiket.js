@@ -39,8 +39,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     <td>${tiket.nama_konser}</td>
                     <td>
                         <button class='btn-edit' onclick="openEditPopup('${tiket.tiket_id}')">
-                            <i class='fas fa-edit'></i> Edit
-                        </button>
+                    <i class='fas fa-edit'></i> Edit
+                    </button>
                         <button class='btn-delete' onclick="openDeletePopup('${tiket.id}')">
                             <i class='fas fa-trash-alt'></i> Hapus
                         </button>
