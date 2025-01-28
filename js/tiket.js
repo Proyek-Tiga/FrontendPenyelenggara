@@ -134,7 +134,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const harga = parseInt(document.getElementById("harga").value);
         const jumlahTiket = parseInt(document.getElementById("jumlah").value);
 
-        if (!konserId || !namaTiket || isNaN(harga) || isNaN(jumlahTiket)) {
+        if (!konserId || !namaTiket || isNaN(harga) || harga <= 0 || isNaN(jumlahTiket) || jumlahTiket <= 0) {
             alert("Harap isi semua data dengan benar!");
             return;
         }
@@ -159,6 +159,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
 
             const responseText = await response.text();
+            console.log(responseText);  // Tambahkan ini untuk melihat pesan error lebih detail
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status} - ${responseText}`);
@@ -174,124 +175,124 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Fungsi untuk membuka popup edit dengan data tiket yang sudah ada
-    async function openEditPopup(tiketId) {
-        try {
-            const response = await fetch(`https://tiket-backend-theta.vercel.app/api/tiket/${tiketId}`, {
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json"
-                }
-            });
+    // async function openEditPopup(tiketId) {
+    //     try {
+    //         const response = await fetch(`https://tiket-backend-theta.vercel.app/api/tiket/${tiketId}`, {
+    //             method: "GET",
+    //             headers: {
+    //                 "Authorization": `Bearer ${token}`,
+    //                 "Content-Type": "application/json"
+    //             }
+    //         });
 
-            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+    //         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
-            const tiket = await response.json();
+    //         const tiket = await response.json();
 
-            if (!tiket || !tiket.konser_id) {
-                alert("Data tiket tidak ditemukan!");
-                return;
-            }
+    //         if (!tiket || !tiket.konser_id) {
+    //             alert("Data tiket tidak ditemukan!");
+    //             return;
+    //         }
 
-            // Isi form dengan data tiket yang akan diedit
-            document.getElementById("edit-nama-tiket").value = tiket.nama_tiket;
-            document.getElementById("edit-harga").value = tiket.harga;
-            document.getElementById("edit-jumlah").value = tiket.jumlah_tiket;
+    //         // Isi form dengan data tiket yang akan diedit
+    //         document.getElementById("edit-nama-tiket").value = tiket.nama_tiket;
+    //         document.getElementById("edit-harga").value = tiket.harga;
+    //         document.getElementById("edit-jumlah").value = tiket.jumlah_tiket;
 
-            // Ambil data konser dan set dropdown
-            await fetchKonser(); // Memastikan konser terambil terlebih dahulu
+    //         // Ambil data konser dan set dropdown
+    //         await fetchKonser(); // Memastikan konser terambil terlebih dahulu
 
-            // Filter konser berdasarkan user_id yang ada di token
-            const userId = getUserIdFromToken(token); // Ambil user_id dari token
-            const konserUser = document.getElementById("konser");
+    //         // Filter konser berdasarkan user_id yang ada di token
+    //         const userId = getUserIdFromToken(token); // Ambil user_id dari token
+    //         const konserUser = document.getElementById("konser");
 
-            // Hanya pilih konser yang sesuai dengan user_id
-            konserUser.value = tiket.konser_id; // Pilih konser yang sesuai dengan tiket yang dipilih
+    //         // Hanya pilih konser yang sesuai dengan user_id
+    //         konserUser.value = tiket.konser_id; // Pilih konser yang sesuai dengan tiket yang dipilih
 
-            // Tampilkan popup edit
-            document.getElementById("edit-popup").style.display = "flex";
-        } catch (error) {
-            console.error("Error mengambil data tiket untuk diedit:", error);
-            alert("Gagal mengambil data tiket. Silakan coba lagi.");
-        }
-    }
+    //         // Tampilkan popup edit
+    //         document.getElementById("edit-popup").style.display = "flex";
+    //     } catch (error) {
+    //         console.error("Error mengambil data tiket untuk diedit:", error);
+    //         alert("Gagal mengambil data tiket. Silakan coba lagi.");
+    //     }
+    // }
 
     // Fungsi untuk menyimpan perubahan setelah diedit
-    document.querySelector(".btn-submit").addEventListener("click", async function (event) {
-        event.preventDefault();
+    // document.querySelector(".btn-submit").addEventListener("click", async function (event) {
+    //     event.preventDefault();
 
-        const editPopup = document.getElementById("edit-popup");
-        if (!editPopup) {
-            console.error("Popup edit tidak ditemukan.");
-            return;
-        }
+    //     const editPopup = document.getElementById("edit-popup");
+    //     if (!editPopup) {
+    //         console.error("Popup edit tidak ditemukan.");
+    //         return;
+    //     }
 
-        const tiketId = editPopup.dataset.tiketId;
-        const konserId = document.getElementById("edit-konser").value;
-        const namaTiket = document.getElementById("edit-nama-tiket").value.trim();
-        const harga = parseInt(document.getElementById("edit-harga").value);
-        const jumlahTiket = parseInt(document.getElementById("edit-jumlah").value);
+    //     const tiketId = editPopup.dataset.tiketId;
+    //     const konserId = document.getElementById("edit-konser").value;
+    //     const namaTiket = document.getElementById("edit-nama-tiket").value.trim();
+    //     const harga = parseInt(document.getElementById("edit-harga").value);
+    //     const jumlahTiket = parseInt(document.getElementById("edit-jumlah").value);
 
-        if (!konserId || !namaTiket || isNaN(harga) || isNaN(jumlahTiket)) {
-            alert("Harap isi semua data dengan benar!");
-            return;
-        }
+    //     if (!konserId || !namaTiket || isNaN(harga) || isNaN(jumlahTiket)) {
+    //         alert("Harap isi semua data dengan benar!");
+    //         return;
+    //     }
 
-        const tiketData = JSON.stringify({
-            konser_id: konserId,
-            nama_tiket: namaTiket,
-            harga: harga,
-            jumlah_tiket: jumlahTiket
-        });
+    //     const tiketData = JSON.stringify({
+    //         konser_id: konserId,
+    //         nama_tiket: namaTiket,
+    //         harga: harga,
+    //         jumlah_tiket: jumlahTiket
+    //     });
 
-        try {
-            const response = await fetch(`https://tiket-backend-theta.vercel.app/api/tiket/${tiketId}`, {
-                method: "PUT",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json"
-                },
-                body: tiketData
-            });
+    //     try {
+    //         const response = await fetch(`https://tiket-backend-theta.vercel.app/api/tiket/${tiketId}`, {
+    //             method: "PUT",
+    //             headers: {
+    //                 "Authorization": `Bearer ${token}`,
+    //                 "Content-Type": "application/json"
+    //             },
+    //             body: tiketData
+    //         });
 
-            const result = await response.json();
-            console.log("Response API:", result);
+    //         const result = await response.json();
+    //         console.log("Response API:", result);
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
+    //         if (!response.ok) {
+    //             throw new Error(`HTTP error! Status: ${response.status}`);
+    //         }
 
-            alert("Tiket berhasil diperbarui!");
-            closeEditPopup();
-            fetchTiket(); // Perbarui tabel tiket setelah edit
-        } catch (error) {
-            console.error("Error mengupdate tiket:", error);
-            alert("Gagal mengupdate tiket. Silakan coba lagi.");
-        }
-    });
+    //         alert("Tiket berhasil diperbarui!");
+    //         closeEditPopup();
+    //         fetchTiket(); // Perbarui tabel tiket setelah edit
+    //     } catch (error) {
+    //         console.error("Error mengupdate tiket:", error);
+    //         alert("Gagal mengupdate tiket. Silakan coba lagi.");
+    //     }
+    // });
 
     // Fungsi untuk menutup popup edit
-    function closeEditPopup() {
-        const editPopup = document.getElementById("edit-popup");
-        if (editPopup) {
-            editPopup.style.display = "none";
-        }
-    }
+    // function closeEditPopup() {
+    //     const editPopup = document.getElementById("edit-popup");
+    //     if (editPopup) {
+    //         editPopup.style.display = "none";
+    //     }
+    // }
 
     // Fungsi untuk membuka konfirmasi hapus
-    function openDeletePopup(tiketId) {
-        document.getElementById("delete-popup").style.display = "flex";
-        window.tiketToDelete = tiketId;
-    }
+    // function openDeletePopup(tiketId) {
+    //     document.getElementById("delete-popup").style.display = "flex";
+    //     window.tiketToDelete = tiketId;
+    // }
 
-    function closeDeletePopup() {
-        document.getElementById("delete-popup").style.display = "none";
-    }
+    // function closeDeletePopup() {
+    //     document.getElementById("delete-popup").style.display = "none";
+    // }
 
-    function confirmDelete() {
-        alert("Tiket dengan ID " + window.tiketToDelete + " telah dihapus.");
-        closeDeletePopup();
-    }
+    // function confirmDelete() {
+    //     alert("Tiket dengan ID " + window.tiketToDelete + " telah dihapus.");
+    //     closeDeletePopup();
+    // }
 
     // Panggil fetchTiket saat halaman dimuat
     fetchTiket();
