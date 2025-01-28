@@ -94,8 +94,9 @@ document.addEventListener("DOMContentLoaded", function () {
         const konserId = konserDropdown.value.trim(); // Ambil ID konser yang dipilih
         const namaTiket = document.getElementById("nama-tiket").value.trim();
         const harga = parseInt(document.getElementById("harga").value);
+        const jumlahTiket = parseInt(document.getElementById("jumlah").value);
 
-        if (!konserId || !namaTiket || isNaN(harga)) {
+        if (!konserId || !namaTiket || isNaN(harga) || isNaN(jumlahTiket)) {
             alert("Harap isi semua data dengan benar!");
             return;
         }
@@ -105,7 +106,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const tiketData = JSON.stringify({
             konser_id: konserId,
             nama_tiket: namaTiket,
-            harga: harga
+            harga: harga,
+            jumlah_tiket: jumlahTiket
         });
 
         try {
