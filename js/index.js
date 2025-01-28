@@ -107,7 +107,7 @@ async function fetchTotalKonser() {
     }
 }
 
-// Fungsi untuk mengambil dan menghitung total transaksi sesuai user_id
+// Fungsi untuk mengambil dan menghitung jumlah transaksi sesuai user_id
 async function fetchTotalTransaksi() {
     const userId = getUserIdFromToken();
     if (!userId) {
@@ -136,13 +136,14 @@ async function fetchTotalTransaksi() {
             return;
         }
 
+        // Filter transaksi berdasarkan user_id
         const userTransaksi = data.filter(transaksi => String(transaksi.user_id) === String(userId));
         console.log("Jumlah transaksi sesuai user:", userTransaksi.length); // Debugging
 
+        // Update jumlah transaksi pada card dashboard
         const transaksiElements = document.querySelectorAll(".cards-container .card .card-info p strong");
         if (transaksiElements.length > 2) {
-            const totalTransaksi = userTransaksi.reduce((acc, transaksi) => acc + transaksi.amount, 0); // Total transaksi
-            transaksiElements[2].textContent = `Rp. ${totalTransaksi.toLocaleString()}`; // Ubah total transaksi pada card ketiga
+            transaksiElements[2].textContent = userTransaksi.length; // Ubah jumlah transaksi pada card ketiga
             console.log("Jumlah transaksi berhasil diperbarui di UI");
         }
 
@@ -151,9 +152,55 @@ async function fetchTotalTransaksi() {
     }
 }
 
+// Fungsi untuk mengambil dan menghitung jumlah tiket sesuai user_id
+async function fetchTotalTiket() {
+    const userId = getUserIdFromToken();
+    if (!userId) {
+        console.error("User ID tidak ditemukan dalam token");
+        return;
+    }
+
+    try {
+        const response = await fetch("https://tiket-backend-theta.vercel.app/api/tiket-penyelenggara", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Gagal mengambil data tiket. Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Data tiket dari API:", data); // Debugging
+
+        if (!Array.isArray(data)) {
+            console.error("Data API tiket bukan array:", data);
+            return;
+        }
+
+        // Filter tiket berdasarkan user_id
+        const userTiket = data.filter(tiket => String(tiket.user_id) === String(userId));
+        console.log("Jumlah tiket sesuai user:", userTiket.length); // Debugging
+
+        // Update jumlah tiket pada card dashboard
+        const tiketElements = document.querySelectorAll(".cards-container .card .card-info p strong");
+        if (tiketElements.length > 3) {
+            tiketElements[3].textContent = userTiket.length; // Ubah jumlah tiket pada card keempat
+            console.log("Jumlah tiket berhasil diperbarui di UI");
+        }
+
+    } catch (error) {
+        console.error("Error fetching tiket:", error);
+    }
+}
+
 // Panggil fungsi untuk memperbarui jumlah permintaan, konser, dan transaksi di dashboard
 document.addEventListener("DOMContentLoaded", () => {
     fetchTotalRequests();
     fetchTotalKonser();
     fetchTotalTransaksi();
+    fetchTotalTiket();
 });
