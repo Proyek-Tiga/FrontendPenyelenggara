@@ -18,6 +18,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    let tiketIdToDelete = null; // Menyimpan ID tiket yang akan dihapus
+
+
     // Fungsi untuk mengambil tiket dan memperbarui tabel
     async function fetchTiket() {
         try {
@@ -260,23 +263,24 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Fungsi untuk membuka popup konfirmasi hapus
-    function openDeletePopup(tiketId) {
+    // Fungsi untuk membuka popup hapus
+    window.openDeletePopup = function (tiketId) {
+        tiketIdToDelete = tiketId; // Simpan tiket ID untuk digunakan saat konfirmasi
         document.getElementById("delete-popup").style.display = "flex";
-        document.getElementById("delete-popup").setAttribute("data-tiket-id", tiketId);
-    }
+    };
 
     // Fungsi untuk menutup popup hapus
-    function closeDeletePopup() {
+    window.closeDeletePopup = function () {
         document.getElementById("delete-popup").style.display = "none";
-    }
+        tiketIdToDelete = null; // Reset ID tiket
+    };
 
-    // Fungsi untuk menghapus tiket
-    async function confirmDelete() {
-        const tiketId = document.getElementById("delete-popup").getAttribute("data-tiket-id");
+    // Fungsi untuk mengonfirmasi penghapusan tiket
+    window.confirmDelete = async function () {
+        if (!tiketIdToDelete) return;
 
         try {
-            const response = await fetch(`https://tiket-backend-theta.vercel.app/api/tiket/${tiketId}`, {
+            const response = await fetch(`https://tiket-backend-theta.vercel.app/api/tiket/${tiketIdToDelete}`, {
                 method: "DELETE",
                 headers: {
                     "Authorization": `Bearer ${token}`,
@@ -284,16 +288,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             });
 
-            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+            if (!response.ok) throw new Error(`Gagal menghapus tiket! Status: ${response.status}`);
 
             alert("Tiket berhasil dihapus!");
             closeDeletePopup();
-            fetchTiket();
+            fetchTiket(); // Perbarui daftar tiket setelah penghapusan
         } catch (error) {
             console.error("Error menghapus tiket:", error);
             alert("Gagal menghapus tiket. Silakan coba lagi.");
         }
-    }
+    };
 
     // Panggil fetchTiket saat halaman dimuat
     fetchTiket();
