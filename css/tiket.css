@@ -465,3 +465,41 @@ body {
 .btn-cancel:hover {
     background-color: #bbb;
 }
+
+/* CSS untuk tombol Edit dan Hapus */
+.btn-edit, .btn-delete {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background 0.3s ease;
+}
+
+.btn-edit {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.btn-delete {
+    background-color: #f44336;
+    color: white;
+    margin-left: 5px;
+}
+
+.btn-edit i, .btn-delete i {
+    margin-right: 5px;
+}
+
+/* Hover efek */
+.btn-edit:hover {
+    background-color: #45a049;
+}
+
+.btn-delete:hover {
+    background-color: #d32f2f;
+}
+
