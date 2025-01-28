@@ -152,14 +152,9 @@ async function fetchTotalTransaksi() {
     }
 }
 
-// Fungsi untuk mengambil dan menghitung jumlah tiket sesuai user_id
+// Fungsi untuk mengambil dan menghitung jumlah tiket
 async function fetchTotalTiket() {
-    const userId = getUserIdFromToken();
-    if (!userId) {
-        console.error("User ID tidak ditemukan dalam token");
-        return;
-    }
-
+    // Tidak perlu lagi memfilter berdasarkan user_id
     try {
         const response = await fetch("https://tiket-backend-theta.vercel.app/api/tiket-penyelenggara", {
             method: "GET",
@@ -181,19 +176,17 @@ async function fetchTotalTiket() {
             return;
         }
 
-        // Debug: Cek user_id dalam data
-        data.forEach((tiket, index) => {
-            console.log(`Tiket ${index + 1}: User ID - ${tiket.user_id}, ID Tiket - ${tiket.id}`);
-        });
-
-        // Filter tiket berdasarkan user_id
-        const userTiket = data.filter(tiket => String(tiket.user_id) === String(userId));
-        console.log("Jumlah tiket sesuai user:", userTiket.length); // Debugging
+        // Cek apakah data tiket kosong
+        if (data.length === 0) {
+            console.log("Tidak ada tiket yang ditemukan.");
+        } else {
+            console.log("Jumlah tiket yang ditemukan:", data.length); // Debugging
+        }
 
         // Update jumlah tiket pada card dashboard
         const tiketElements = document.querySelectorAll(".cards-container .card .card-info p strong");
         if (tiketElements.length > 1) {
-            tiketElements[1].textContent = userTiket.length; // Ubah jumlah tiket pada card keempat
+            tiketElements[1].textContent = data.length; // Ubah jumlah tiket pada card kedua
             console.log("Jumlah tiket berhasil diperbarui di UI");
         }
 
@@ -201,6 +194,7 @@ async function fetchTotalTiket() {
         console.error("Error fetching tiket:", error);
     }
 }
+
 
 // Panggil fungsi untuk memperbarui jumlah permintaan, konser, dan transaksi di dashboard
 document.addEventListener("DOMContentLoaded", () => {
