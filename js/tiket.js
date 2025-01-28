@@ -114,7 +114,7 @@ document.addEventListener("DOMContentLoaded", function () {
             konserUser.forEach(konser => {
                 const option = document.createElement("option");
                 option.value = konser.konser_id;
-                option.textContent = konser.nama_konser;
+                option.textContent = `${konser.nama_konser} (Kapasitas: ${konser.jumlah_tiket} tiket)`;
                 konserDropdown.appendChild(option);
             });
 
@@ -136,6 +136,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!konserId || !namaTiket || isNaN(harga) || harga <= 0 || isNaN(jumlahTiket) || jumlahTiket <= 0) {
             alert("Harap isi semua data dengan benar!");
+            return;
+        }
+
+        // Dapatkan kapasitas konser yang dipilih
+        const kapasitasKonser = parseInt(konserDropdown.selectedOptions[0].dataset.jumlah_tiket); // Asumsi kapasitas ada di data atribut
+
+        if (jumlahTiket > kapasitasKonser) {
+            alert(`Jumlah tiket yang Anda masukkan melebihi kapasitas konser (${kapasitasKonser} tiket).`);
             return;
         }
 
