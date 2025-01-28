@@ -172,10 +172,13 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             // Isi form dengan data tiket yang akan diedit
-            document.getElementById("edit-konser").value = tiket.konser_id;
             document.getElementById("edit-nama-tiket").value = tiket.nama_tiket;
             document.getElementById("edit-harga").value = tiket.harga;
             document.getElementById("edit-jumlah").value = tiket.jumlah_tiket;
+
+            // Ambil data konser dan set dropdown
+            await fetchKonser(); // Memastikan konser terambil terlebih dahulu
+            document.getElementById("edit-konser").value = tiket.konser_id; // Pilih konser yang sesuai
 
             // Simpan ID tiket yang sedang diedit
             document.getElementById("edit-popup").dataset.tiketId = tiketId;
@@ -242,6 +245,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    // Fungsi untuk menutup popup edit
     function closeEditPopup() {
         const editPopup = document.getElementById("edit-popup");
         if (editPopup) {
