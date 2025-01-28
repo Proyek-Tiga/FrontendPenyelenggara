@@ -89,27 +89,27 @@ document.addEventListener("DOMContentLoaded", function () {
     // Fungsi untuk menambahkan tiket
     document.querySelector(".btn-submit").addEventListener("click", async function (event) {
         event.preventDefault();
-
+    
         const konserDropdown = document.getElementById("konser");
         const konserId = konserDropdown.value.trim(); // Ambil ID konser yang dipilih
         const namaTiket = document.getElementById("nama-tiket").value.trim();
         const harga = parseInt(document.getElementById("harga").value);
         const jumlahTiket = parseInt(document.getElementById("jumlah").value);
-
+    
         if (!konserId || !namaTiket || isNaN(harga) || isNaN(jumlahTiket)) {
             alert("Harap isi semua data dengan benar!");
             return;
         }
-
+    
         console.log("konserId:", konserId); // Debugging untuk melihat konser_id sebelum dikirim
-
+    
         const tiketData = JSON.stringify({
             konser_id: konserId,
             nama_tiket: namaTiket,
             harga: harga,
             jumlah_tiket: jumlahTiket
         });
-
+    
         try {
             const response = await fetch("https://tiket-backend-theta.vercel.app/api/tiket", {
                 method: "POST",
@@ -119,18 +119,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 },
                 body: tiketData
             });
-
-            const responseText = await response.text();
-
+    
+            const responseData = await response.json(); // Mengubah response menjadi JSON
+    
             if (!response.ok) {
-                if (response.status === 400 && responseText.includes("Jumlah tiket melebihi kapasitas konser")) {
+                if (response.status === 400 && responseData.message.includes("Jumlah tiket melebihi kapasitas konser")) {
                     alert("Gagal menambahkan tiket: Jumlah tiket melebihi kapasitas konser!");
                 } else {
-                    throw new Error(`HTTP error! Status: ${response.status} - ${responseText}`);
+                    throw new Error(`HTTP error! Status: ${response.status} - ${responseData.message}`);
                 }
                 return;
             }
-
+    
             alert("Tiket berhasil ditambahkan!");
             closePopup();
             fetchTiket();
@@ -138,7 +138,7 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error("Error menambahkan tiket:", error);
             alert("Gagal menambahkan tiket. Silakan coba lagi.");
         }
-    });
+    });    
 
     // Panggil fetchTiket saat halaman dimuat
     fetchTiket();
