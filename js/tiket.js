@@ -38,15 +38,23 @@ document.addEventListener("DOMContentLoaded", function () {
                     <td>Rp ${tiket.harga.toLocaleString()}</td>
                     <td>${tiket.nama_konser}</td>
                     <td>
-                        <button class='btn-edit' onclick="openEditPopup('${tiket.tiket_id}')">
-                    <i class='fas fa-edit'></i> Edit
-                    </button>
+                        <button class='btn-edit' data-tiket-id="${tiket.tiket_id}">
+                            <i class='fas fa-edit'></i> Edit
+                        </button>
                         <button class='btn-delete' onclick="openDeletePopup('${tiket.id}')">
                             <i class='fas fa-trash-alt'></i> Hapus
                         </button>
                     </td>
                 `;
                 tableBody.appendChild(row);
+            });
+
+            // Menambahkan event listener pada tombol Edit
+            const editButtons = document.querySelectorAll('.btn-edit');
+            editButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    openEditPopup(button.getAttribute('data-tiket-id'));
+                });
             });
         } catch (error) {
             console.error("Error mengambil data tiket:", error);
