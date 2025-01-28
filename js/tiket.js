@@ -123,7 +123,12 @@ document.addEventListener("DOMContentLoaded", function () {
             const responseText = await response.text();
 
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status} - ${responseText}`);
+                if (response.status === 400 && responseText.includes("Jumlah tiket melebihi kapasitas konser")) {
+                    alert("Gagal menambahkan tiket: Jumlah tiket melebihi kapasitas konser!");
+                } else {
+                    throw new Error(`HTTP error! Status: ${response.status} - ${responseText}`);
+                }
+                return;
             }
 
             alert("Tiket berhasil ditambahkan!");
