@@ -90,11 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const konserDropdown = document.getElementById("konser");
             konserDropdown.innerHTML = '<option value="">-- Pilih Konser --</option>';
 
-            // Filter konser berdasarkan user_id (pastikan konser punya user_id yang sama dengan token)
-            const userId = decodeToken(token).user_id; // Misal, menggunakan fungsi decodeToken untuk mengambil user_id
-            const filteredKonserList = konserList.filter(konser => konser.user_id === userId);
-
-            filteredKonserList.forEach(konser => {
+            konserList.forEach(konser => {
                 const option = document.createElement("option");
                 option.value = konser.konser_id;
                 option.textContent = konser.nama_konser;
