@@ -8,9 +8,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function getUserIdFromToken(token) {
-        const payload = JSON.parse(atob(token.split('.')[1])); // Decode payload token
-        return payload.user_id; // Sesuaikan dengan struktur token kamu
-    }
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1])); 
+            console.log("Decoded Token:", payload); // Debugging
+            return payload.user_id; 
+        } catch (error) {
+            console.error("Gagal decode token:", error);
+            return null;
+        }
+    }    
 
     // Fungsi untuk mengambil tiket dan memperbarui tabel
     async function fetchTiket() {
@@ -66,8 +72,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // Fungsi untuk mengambil konser berdasarkan user_id dari token
     async function fetchKonser() {
         try {
-            const userId = getUserIdFromToken(token); // Ambil user_id dari token
-            const response = await fetch(`https://tiket-backend-theta.vercel.app/api/konser?user_id=${userId}`, {
+            const userId = getUserIdFromToken(token);
+            const response = await fetch("https://tiket-backend-theta.vercel.app/api/konser", {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${token}`,
@@ -77,8 +83,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
-            const konserList = await response.json();
-            console.log("Data konser untuk user ini:", konserList); // Debugging
+            let konserList = await response.json();
+            console.log("Semua konser:", konserList); // Debugging
+
+            // Filter konser berdasarkan user_id
+            konserList = konserList.filter(konser => konser.user_id === userId);
+            console.log("Konser setelah filter:", konserList); // Debugging
 
             const konserDropdown = document.getElementById("konser");
             konserDropdown.innerHTML = '<option value="">-- Pilih Konser --</option>';
