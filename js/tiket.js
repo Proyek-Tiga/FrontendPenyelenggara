@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function () {
         event.preventDefault();
 
         const konserDropdown = document.getElementById("konser");
-        const konserId = konserDropdown.value.trim();
+        const konserId = konserDropdown.value.trim(); // Ambil ID konser yang dipilih
         const namaTiket = document.getElementById("nama-tiket").value.trim();
         const harga = parseInt(document.getElementById("harga").value);
         const jumlahTiket = parseInt(document.getElementById("jumlah").value);
@@ -120,28 +120,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 body: tiketData
             });
 
-            const responseText = await response.text(); // Ambil respons sebagai teks
+            const responseText = await response.text();
 
             if (!response.ok) {
-                if (response.status === 400 && responseText.includes("Jumlah tiket melebihi kapasitas konser")) {
-                    alert("Gagal menambahkan tiket: Jumlah tiket melebihi kapasitas konser!");
-                } else {
-                    throw new Error(`HTTP error! Status: ${response.status} - ${responseText}`);
-                }
-                return;
+                throw new Error(`HTTP error! Status: ${response.status} - ${responseText}`);
             }
 
-            try {
-                const responseData = JSON.parse(responseText); // Coba parse ke JSON jika memungkinkan
-                alert("Tiket berhasil ditambahkan!");
-                closePopup();
-                fetchTiket();
-            } catch (jsonError) {
-                console.warn("Respons bukan JSON, tetapi teks biasa:", responseText);
-                alert("Tiket berhasil ditambahkan!");
-                closePopup();
-                fetchTiket();
-            }
+            alert("Tiket berhasil ditambahkan!");
+            closePopup();
+            fetchTiket();
         } catch (error) {
             console.error("Error menambahkan tiket:", error);
             alert("Gagal menambahkan tiket. Silakan coba lagi.");
