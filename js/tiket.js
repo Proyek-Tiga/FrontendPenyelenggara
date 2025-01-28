@@ -7,13 +7,12 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-    function parseJwt(token) {
+    function getUserIdFromToken(token) {
         try {
-            const base64Url = token.split('.')[1];
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            return JSON.parse(atob(base64));
-        } catch (e) {
-            console.error("Error decoding token:", e);
+            const payload = JSON.parse(atob(token.split(".")[1])); // Dekode payload JWT
+            return payload.user_id; // Pastikan backend menyertakan user_id dalam token
+        } catch (error) {
+            console.error("Gagal mendekode token:", error);
             return null;
         }
     }
@@ -86,16 +85,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Fungsi untuk mengambil konser berdasarkan user_id dari token
     async function fetchKonser() {
-        const decodedToken = parseJwt(token);
-        if (!decodedToken || !decodedToken.user_id) {
-            console.error("Gagal mendapatkan user_id dari token.");
-            return;
-        }
-
-        const userId = decodedToken.user_id;
-
         try {
-            const response = await fetch(`https://tiket-backend-theta.vercel.app/api/konser?user_id=${userId}`, {
+            const response = await fetch("https://tiket-backend-theta.vercel.app/api/konser", {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${token}`,
@@ -106,15 +97,27 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
             const konserList = await response.json();
+            const userId = getUserIdFromToken(token); // Ambil user_id dari token
+
+            if (!userId) {
+                console.error("User ID tidak ditemukan dalam token.");
+                alert("Gagal mengambil data user. Silakan login kembali.");
+                return;
+            }
+
+            // Filter konser yang hanya milik user yang sedang login
+            const konserUser = konserList.filter(konser => konser.user_id === userId);
+
             const konserDropdown = document.getElementById("konser");
             konserDropdown.innerHTML = '<option value="">-- Pilih Konser --</option>';
 
-            konserList.forEach(konser => {
+            konserUser.forEach(konser => {
                 const option = document.createElement("option");
                 option.value = konser.konser_id;
                 option.textContent = konser.nama_konser;
                 konserDropdown.appendChild(option);
             });
+
         } catch (error) {
             console.error("Error mengambil konser:", error);
             alert("Gagal mengambil konser. Silakan coba lagi.");
