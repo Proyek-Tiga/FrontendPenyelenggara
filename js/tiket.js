@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
     async function fetchTiket() {
         try {
             const userId = getUserIdFromToken(token);
-            const response = await fetch(`http://localhost:5000/api/tiket-penyelenggara?user_id=${userId}`, {
+            const response = await fetch(`https://tiket-backend-theta.vercel.app/api/tiket-penyelenggara?user_id=${userId}`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${token}`,

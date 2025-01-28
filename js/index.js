@@ -107,7 +107,7 @@ async function fetchTotalKonser() {
     }
 }
 
-// Fungsi untuk mengambil dan menghitung jumlah transaksi sesuai user_id
+// Fungsi untuk mengambil dan menghitung total transaksi sesuai user_id
 async function fetchTotalTransaksi() {
     const userId = getUserIdFromToken();
     if (!userId) {
@@ -116,7 +116,7 @@ async function fetchTotalTransaksi() {
     }
 
     try {
-        const response = await fetch("https://tiket-backend-theta.vercel.app/api/transaksi", {
+        const response = await fetch("https://tiket-backend-theta.vercel.app/api/transaksi-penyelenggara", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -136,14 +136,17 @@ async function fetchTotalTransaksi() {
             return;
         }
 
-        // Filter transaksi berdasarkan user_id
-        const userTransaksi = data.filter(transaksi => String(transaksi.user_id) === String(userId));
-        console.log("Jumlah transaksi sesuai user:", userTransaksi.length); // Debugging
+        // Cek apakah data transaksi kosong
+        if (data.length === 0) {
+            console.log("Tidak ada transaksi yang ditemukan.");
+        } else {
+            console.log("Jumlah transaksi yang ditemukan:", data.length); // Debugging
+        }
 
         // Update jumlah transaksi pada card dashboard
         const transaksiElements = document.querySelectorAll(".cards-container .card .card-info p strong");
-        if (transaksiElements.length > 3) {
-            transaksiElements[3].textContent = userTransaksi.length; // Ubah jumlah transaksi pada card ketiga
+        if (transaksiElements.length > 0) {
+            transaksiElements[3].textContent = data.length; // Ubah jumlah transaksi pada card keempat
             console.log("Jumlah transaksi berhasil diperbarui di UI");
         }
 

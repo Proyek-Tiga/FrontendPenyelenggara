@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-    fetch("http://localhost:5000/api/transaksi-penyelenggara", {
+    fetch("https://tiket-backend-theta.vercel.app/api/transaksi-penyelenggara", {
         method: "GET",
         headers: {
             "Authorization": `Bearer ${token}`,
