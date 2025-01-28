@@ -7,6 +7,11 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
+    function getUserIdFromToken(token) {
+        const payload = JSON.parse(atob(token.split('.')[1])); // Decode payload token
+        return payload.user_id; // Sesuaikan dengan struktur token kamu
+    }
+
     // Fungsi untuk mengambil tiket dan memperbarui tabel
     async function fetchTiket() {
         try {
@@ -60,7 +65,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // Fungsi untuk mengambil konser berdasarkan user_id dari token
     async function fetchKonser() {
         try {
-            const response = await fetch("https://tiket-backend-theta.vercel.app/api/konser", {
+            const userId = getUserIdFromToken(token); // Ambil user_id dari token
+            const response = await fetch(`https://tiket-backend-theta.vercel.app/api/konser?user_id=${userId}`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${token}`,
@@ -71,6 +77,8 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
             const konserList = await response.json();
+            console.log("Data konser untuk user ini:", konserList); // Debugging
+
             const konserDropdown = document.getElementById("konser");
             konserDropdown.innerHTML = '<option value="">-- Pilih Konser --</option>';
 
@@ -110,6 +118,8 @@ document.addEventListener("DOMContentLoaded", function () {
             jumlah_tiket: jumlahTiket
         });
 
+        console.log("Data yang dikirim:", tiketData); // Debugging
+
         try {
             const response = await fetch("https://tiket-backend-theta.vercel.app/api/tiket", {
                 method: "POST",
@@ -121,6 +131,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
 
             const responseText = await response.text();
+            console.log("Response dari server:", responseText); // Debugging
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status} - ${responseText}`);
