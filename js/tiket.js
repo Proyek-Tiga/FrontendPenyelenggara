@@ -200,10 +200,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Ambil data konser dan set dropdown
             await fetchKonser(); // Memastikan konser terambil terlebih dahulu
-            document.getElementById("edit-konser").value = tiket.konser_id; // Pilih konser yang sesuai
 
-            // Simpan ID tiket yang sedang diedit
-            document.getElementById("edit-popup").dataset.tiketId = tiketId;
+            // Filter konser berdasarkan user_id yang ada di token
+            const userId = getUserIdFromToken(token); // Ambil user_id dari token
+            const konserUser = document.getElementById("konser");
+
+            // Hanya pilih konser yang sesuai dengan user_id
+            konserUser.value = tiket.konser_id; // Pilih konser yang sesuai dengan tiket yang dipilih
 
             // Tampilkan popup edit
             document.getElementById("edit-popup").style.display = "flex";
