@@ -7,6 +7,17 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
+    function parseJwt(token) {
+        try {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            return JSON.parse(atob(base64));
+        } catch (e) {
+            console.error("Error decoding token:", e);
+            return null;
+        }
+    }
+
     // Fungsi untuk mengambil tiket dan memperbarui tabel
     async function fetchTiket() {
         try {
@@ -75,8 +86,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Fungsi untuk mengambil konser berdasarkan user_id dari token
     async function fetchKonser() {
+        const decodedToken = parseJwt(token);
+        if (!decodedToken || !decodedToken.user_id) {
+            console.error("Gagal mendapatkan user_id dari token.");
+            return;
+        }
+
+        const userId = decodedToken.user_id;
+
         try {
-            const response = await fetch("https://tiket-backend-theta.vercel.app/api/konser", {
+            const response = await fetch(`https://tiket-backend-theta.vercel.app/api/konser?user_id=${userId}`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${token}`,
@@ -178,8 +197,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Ambil data konser dan set dropdown
             await fetchKonser(); // Memastikan konser terambil terlebih dahulu
-            const konserDropdown = document.getElementById("edit-konser"); // Pastikan ID yang digunakan benar
-            konserDropdown.value = tiket.konser_id; // Pilih konser yang sesuai
+            document.getElementById("edit-konser").value = tiket.konser_id; // Pilih konser yang sesuai
 
             // Simpan ID tiket yang sedang diedit
             document.getElementById("edit-popup").dataset.tiketId = tiketId;
