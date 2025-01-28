@@ -32,7 +32,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
-            const data = await response.json();
+            let data = await response.json();
+
+            // Sortir data berdasarkan ID agar urutan tetap
+            data.sort((a, b) => a.tiket_id - b.tiket_id);
+
             const tableBody = document.querySelector(".data-table tbody");
             tableBody.innerHTML = "";
 
