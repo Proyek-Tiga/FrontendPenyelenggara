@@ -158,6 +158,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const tiket = await response.json();
 
+            if (!tiket || !tiket.konser_id) {
+                alert("Data tiket tidak ditemukan!");
+                return;
+            }
+
             // Isi form dengan data tiket yang akan diedit
             document.getElementById("edit-konser").value = tiket.konser_id;
             document.getElementById("edit-nama-tiket").value = tiket.nama_tiket;
@@ -176,7 +181,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Fungsi untuk menyimpan perubahan setelah diedit
-    document.getElementById("btn-submit-edit").addEventListener("click", async function (event) {
+    document.querySelector(".btn-submit").addEventListener("click", async function (event) {
         event.preventDefault();
 
         const editPopup = document.getElementById("edit-popup");
@@ -212,6 +217,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 },
                 body: tiketData
             });
+
+            const result = await response.json();
+            console.log("Response API:", result);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
