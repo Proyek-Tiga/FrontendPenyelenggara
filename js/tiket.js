@@ -15,7 +15,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // Fungsi untuk mengambil tiket dan memperbarui tabel
     async function fetchTiket() {
         try {
-            const response = await fetch("http://localhost:5000/api/tiket-penyelenggara", {
+            const userId = getUserIdFromToken(token);
+            const response = await fetch(`http://localhost:5000/api/tiket-penyelenggara?user_id=${userId}`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${token}`,
