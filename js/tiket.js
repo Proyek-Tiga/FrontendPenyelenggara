@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <td>Rp ${tiket.harga.toLocaleString()}</td>
                     <td>${tiket.nama_konser}</td>
                     <td>
-                        <button class='btn-edit' onclick="openEditPopup('${tiket.nama_tiket}', ${tiket.harga}, ${tiket.jumlah_tiket}, '${tiket.nama_konser}')">
+                        <button class='btn-edit' onclick="openEditPopup('${tiket.tiket_id}')">
                             <i class='fas fa-edit'></i> Edit
                         </button>
                         <button class='btn-delete' onclick="openDeletePopup('${tiket.id}')">
@@ -143,17 +143,94 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Fungsi untuk membuka popup edit
-    function openEditPopup(nama, harga, jumlah, konser) {
-        document.getElementById("edit-nama-tiket").value = nama;
-        document.getElementById("edit-harga").value = harga;
-        document.getElementById("edit-jumlah").value = jumlah;
-        document.getElementById("edit-konser").value = konser;
-        document.getElementById("edit-popup").style.display = "flex";
+    // Fungsi untuk membuka popup edit dengan data tiket yang sudah ada
+    async function openEditPopup(tiketId) {
+        try {
+            const response = await fetch(`https://tiket-backend-theta.vercel.app/api/tiket/${tiketId}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+            const tiket = await response.json();
+
+            // Isi form dengan data tiket yang akan diedit
+            document.getElementById("edit-konser").value = tiket.konser_id;
+            document.getElementById("edit-nama-tiket").value = tiket.nama_tiket;
+            document.getElementById("edit-harga").value = tiket.harga;
+            document.getElementById("edit-jumlah").value = tiket.jumlah_tiket;
+
+            // Simpan ID tiket yang sedang diedit
+            document.getElementById("edit-popup").dataset.tiketId = tiketId;
+
+            // Tampilkan popup edit
+            document.getElementById("edit-popup").style.display = "flex";
+        } catch (error) {
+            console.error("Error mengambil data tiket untuk diedit:", error);
+            alert("Gagal mengambil data tiket. Silakan coba lagi.");
+        }
     }
 
+    // Fungsi untuk menyimpan perubahan setelah diedit
+    document.getElementById("btn-submit-edit").addEventListener("click", async function (event) {
+        event.preventDefault();
+
+        const editPopup = document.getElementById("edit-popup");
+        if (!editPopup) {
+            console.error("Popup edit tidak ditemukan.");
+            return;
+        }
+
+        const tiketId = editPopup.dataset.tiketId;
+        const konserId = document.getElementById("edit-konser").value;
+        const namaTiket = document.getElementById("edit-nama-tiket").value.trim();
+        const harga = parseInt(document.getElementById("edit-harga").value);
+        const jumlahTiket = parseInt(document.getElementById("edit-jumlah").value);
+
+        if (!konserId || !namaTiket || isNaN(harga) || isNaN(jumlahTiket)) {
+            alert("Harap isi semua data dengan benar!");
+            return;
+        }
+
+        const tiketData = JSON.stringify({
+            konser_id: konserId,
+            nama_tiket: namaTiket,
+            harga: harga,
+            jumlah_tiket: jumlahTiket
+        });
+
+        try {
+            const response = await fetch(`https://tiket-backend-theta.vercel.app/api/tiket/${tiketId}`, {
+                method: "PUT",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: tiketData
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            alert("Tiket berhasil diperbarui!");
+            closeEditPopup();
+            fetchTiket(); // Perbarui tabel tiket setelah edit
+        } catch (error) {
+            console.error("Error mengupdate tiket:", error);
+            alert("Gagal mengupdate tiket. Silakan coba lagi.");
+        }
+    });
+
     function closeEditPopup() {
-        document.getElementById("edit-popup").style.display = "none";
+        const editPopup = document.getElementById("edit-popup");
+        if (editPopup) {
+            editPopup.style.display = "none";
+        }
     }
 
     // Fungsi untuk membuka konfirmasi hapus
