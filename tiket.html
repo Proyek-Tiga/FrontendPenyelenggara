@@ -68,6 +68,7 @@
                                 <th>Jumlah Tiket</th>
                                 <th>Harga</th>
                                 <th>Nama Konser</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -76,7 +77,7 @@
                     </table>
                 </div>
             </section>
-            
+
             <!-- Popup Form -->
             <div class="popup-overlay" id="popup">
                 <div class="popup-box">
@@ -108,6 +109,46 @@
                             <button type="button" class="btn-cancel" onclick="closePopup()">Batal</button>
                         </div>
                     </form>
+                </div>
+            </div>
+
+            <div class="popup-overlay" id="edit-popup">
+                <div class="popup-box">
+                    <h2>Edit Tiket</h2>
+                    <form>
+                        <label for="edit-konser">Pilih Konser:</label>
+                        <select id="edit-konser">
+                            <option value="">-- Pilih Konser --</option>
+                            <option value="990cefa4-c093-4298-bc5b-a6d30c863dd8">Konser Audy's Night</option>
+                            <option value="76e6a1a7-1d73-4b56-9b24-122a00c7a06b">Konser Happy Vibes</option>
+                        </select>
+
+                        <label for="edit-nama-tiket">Nama Tiket:</label>
+                        <input type="text" id="edit-nama-tiket" placeholder="Masukkan nama tiket">
+
+                        <label for="edit-harga">Harga Tiket:</label>
+                        <input type="number" id="edit-harga" placeholder="Masukkan harga tiket">
+
+                        <label for="edit-jumlah">Jumlah Tiket:</label>
+                        <input type="number" id="edit-jumlah" placeholder="Masukkan jumlah tiket">
+
+                        <div class="button-group">
+                            <button type="submit" class="btn-submit">Simpan</button>
+                            <button type="button" class="btn-cancel" onclick="closeEditPopup()">Batal</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Popup Konfirmasi Hapus -->
+            <div class="popup-overlay" id="delete-popup">
+                <div class="popup-box">
+                    <h2>Konfirmasi</h2>
+                    <p>Apakah Anda yakin ingin menghapus tiket ini?</p>
+                    <div class="button-group">
+                        <button type="button" class="btn-delete" onclick="confirmDelete()">Hapus</button>
+                        <button type="button" class="btn-cancel" onclick="closeDeletePopup()">Batal</button>
+                    </div>
                 </div>
             </div>
 

@@ -37,6 +37,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     <td>${tiket.jumlah_tiket}</td>
                     <td>Rp ${tiket.harga.toLocaleString()}</td>
                     <td>${tiket.nama_konser}</td>
+                    <td>
+                        <button class='btn-edit' onclick="openEditPopup('${tiket.nama_tiket}', ${tiket.harga}, ${tiket.jumlah_tiket}, '${tiket.nama_konser}')">
+                            <i class='fas fa-edit'></i> Edit
+                        </button>
+                        <button class='btn-delete' onclick="openDeletePopup('${tiket.id}')">
+                            <i class='fas fa-trash-alt'></i> Hapus
+                        </button>
+                    </td>
                 `;
                 tableBody.appendChild(row);
             });
@@ -134,6 +142,34 @@ document.addEventListener("DOMContentLoaded", function () {
             alert("Gagal menambahkan tiket. Silakan coba lagi.");
         }
     });
+
+    // Fungsi untuk membuka popup edit
+    function openEditPopup(nama, harga, jumlah, konser) {
+        document.getElementById("edit-nama-tiket").value = nama;
+        document.getElementById("edit-harga").value = harga;
+        document.getElementById("edit-jumlah").value = jumlah;
+        document.getElementById("edit-konser").value = konser;
+        document.getElementById("edit-popup").style.display = "flex";
+    }
+
+    function closeEditPopup() {
+        document.getElementById("edit-popup").style.display = "none";
+    }
+
+    // Fungsi untuk membuka konfirmasi hapus
+    function openDeletePopup(tiketId) {
+        document.getElementById("delete-popup").style.display = "flex";
+        window.tiketToDelete = tiketId;
+    }
+
+    function closeDeletePopup() {
+        document.getElementById("delete-popup").style.display = "none";
+    }
+
+    function confirmDelete() {
+        alert("Tiket dengan ID " + window.tiketToDelete + " telah dihapus.");
+        closeDeletePopup();
+    }
 
     // Panggil fetchTiket saat halaman dimuat
     fetchTiket();
