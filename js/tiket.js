@@ -7,16 +7,6 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-    function getUserIdFromToken(token) {
-        try {
-            const payload = JSON.parse(atob(token.split(".")[1])); // Dekode payload JWT
-            return payload.user_id; // Pastikan backend menyertakan user_id dalam token
-        } catch (error) {
-            console.error("Gagal mendekode token:", error);
-            return null;
-        }
-    }
-
     // Fungsi untuk mengambil tiket dan memperbarui tabel
     async function fetchTiket() {
         try {
@@ -47,24 +37,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     <td>${tiket.jumlah_tiket}</td>
                     <td>Rp ${tiket.harga.toLocaleString()}</td>
                     <td>${tiket.nama_konser}</td>
-                    <td>
-                        <button class='btn-edit' data-tiket-id="${tiket.tiket_id}">
-                            <i class='fas fa-edit'></i> Edit
-                        </button>
-                        <button class='btn-delete' onclick="openDeletePopup('${tiket.id}')">
-                            <i class='fas fa-trash-alt'></i> Hapus
-                        </button>
-                    </td>
                 `;
                 tableBody.appendChild(row);
-            });
-
-            // Menambahkan event listener pada tombol Edit
-            const editButtons = document.querySelectorAll('.btn-edit');
-            editButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    openEditPopup(button.getAttribute('data-tiket-id'));
-                });
             });
         } catch (error) {
             console.error("Error mengambil data tiket:", error);
@@ -97,27 +71,15 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
             const konserList = await response.json();
-            const userId = getUserIdFromToken(token); // Ambil user_id dari token
-
-            if (!userId) {
-                console.error("User ID tidak ditemukan dalam token.");
-                alert("Gagal mengambil data user. Silakan login kembali.");
-                return;
-            }
-
-            // Filter konser yang hanya milik user yang sedang login
-            const konserUser = konserList.filter(konser => konser.user_id === userId);
-
             const konserDropdown = document.getElementById("konser");
             konserDropdown.innerHTML = '<option value="">-- Pilih Konser --</option>';
 
-            konserUser.forEach(konser => {
+            konserList.forEach(konser => {
                 const option = document.createElement("option");
                 option.value = konser.konser_id;
-                option.textContent = `${konser.nama_konser} (Kapasitas: ${konser.jumlah_tiket} tiket)`;
+                option.textContent = konser.nama_konser;
                 konserDropdown.appendChild(option);
             });
-
         } catch (error) {
             console.error("Error mengambil konser:", error);
             alert("Gagal mengambil konser. Silakan coba lagi.");
@@ -134,16 +96,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const harga = parseInt(document.getElementById("harga").value);
         const jumlahTiket = parseInt(document.getElementById("jumlah").value);
 
-        if (!konserId || !namaTiket || isNaN(harga) || harga <= 0 || isNaN(jumlahTiket) || jumlahTiket <= 0) {
+        if (!konserId || !namaTiket || isNaN(harga) || isNaN(jumlahTiket)) {
             alert("Harap isi semua data dengan benar!");
-            return;
-        }
-
-        // Dapatkan kapasitas konser yang dipilih
-        const kapasitasKonser = parseInt(konserDropdown.selectedOptions[0].dataset.jumlah_tiket); // Asumsi kapasitas ada di data atribut
-
-        if (jumlahTiket > kapasitasKonser) {
-            alert(`Jumlah tiket yang Anda masukkan melebihi kapasitas konser (${kapasitasKonser} tiket).`);
             return;
         }
 
@@ -167,7 +121,6 @@ document.addEventListener("DOMContentLoaded", function () {
             });
 
             const responseText = await response.text();
-            console.log(responseText);  // Tambahkan ini untuk melihat pesan error lebih detail
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status} - ${responseText}`);
@@ -181,126 +134,6 @@ document.addEventListener("DOMContentLoaded", function () {
             alert("Gagal menambahkan tiket. Silakan coba lagi.");
         }
     });
-
-    // Fungsi untuk membuka popup edit dengan data tiket yang sudah ada
-    // async function openEditPopup(tiketId) {
-    //     try {
-    //         const response = await fetch(`https://tiket-backend-theta.vercel.app/api/tiket/${tiketId}`, {
-    //             method: "GET",
-    //             headers: {
-    //                 "Authorization": `Bearer ${token}`,
-    //                 "Content-Type": "application/json"
-    //             }
-    //         });
-
-    //         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-
-    //         const tiket = await response.json();
-
-    //         if (!tiket || !tiket.konser_id) {
-    //             alert("Data tiket tidak ditemukan!");
-    //             return;
-    //         }
-
-    //         // Isi form dengan data tiket yang akan diedit
-    //         document.getElementById("edit-nama-tiket").value = tiket.nama_tiket;
-    //         document.getElementById("edit-harga").value = tiket.harga;
-    //         document.getElementById("edit-jumlah").value = tiket.jumlah_tiket;
-
-    //         // Ambil data konser dan set dropdown
-    //         await fetchKonser(); // Memastikan konser terambil terlebih dahulu
-
-    //         // Filter konser berdasarkan user_id yang ada di token
-    //         const userId = getUserIdFromToken(token); // Ambil user_id dari token
-    //         const konserUser = document.getElementById("konser");
-
-    //         // Hanya pilih konser yang sesuai dengan user_id
-    //         konserUser.value = tiket.konser_id; // Pilih konser yang sesuai dengan tiket yang dipilih
-
-    //         // Tampilkan popup edit
-    //         document.getElementById("edit-popup").style.display = "flex";
-    //     } catch (error) {
-    //         console.error("Error mengambil data tiket untuk diedit:", error);
-    //         alert("Gagal mengambil data tiket. Silakan coba lagi.");
-    //     }
-    // }
-
-    // Fungsi untuk menyimpan perubahan setelah diedit
-    // document.querySelector(".btn-submit").addEventListener("click", async function (event) {
-    //     event.preventDefault();
-
-    //     const editPopup = document.getElementById("edit-popup");
-    //     if (!editPopup) {
-    //         console.error("Popup edit tidak ditemukan.");
-    //         return;
-    //     }
-
-    //     const tiketId = editPopup.dataset.tiketId;
-    //     const konserId = document.getElementById("edit-konser").value;
-    //     const namaTiket = document.getElementById("edit-nama-tiket").value.trim();
-    //     const harga = parseInt(document.getElementById("edit-harga").value);
-    //     const jumlahTiket = parseInt(document.getElementById("edit-jumlah").value);
-
-    //     if (!konserId || !namaTiket || isNaN(harga) || isNaN(jumlahTiket)) {
-    //         alert("Harap isi semua data dengan benar!");
-    //         return;
-    //     }
-
-    //     const tiketData = JSON.stringify({
-    //         konser_id: konserId,
-    //         nama_tiket: namaTiket,
-    //         harga: harga,
-    //         jumlah_tiket: jumlahTiket
-    //     });
-
-    //     try {
-    //         const response = await fetch(`https://tiket-backend-theta.vercel.app/api/tiket/${tiketId}`, {
-    //             method: "PUT",
-    //             headers: {
-    //                 "Authorization": `Bearer ${token}`,
-    //                 "Content-Type": "application/json"
-    //             },
-    //             body: tiketData
-    //         });
-
-    //         const result = await response.json();
-    //         console.log("Response API:", result);
-
-    //         if (!response.ok) {
-    //             throw new Error(`HTTP error! Status: ${response.status}`);
-    //         }
-
-    //         alert("Tiket berhasil diperbarui!");
-    //         closeEditPopup();
-    //         fetchTiket(); // Perbarui tabel tiket setelah edit
-    //     } catch (error) {
-    //         console.error("Error mengupdate tiket:", error);
-    //         alert("Gagal mengupdate tiket. Silakan coba lagi.");
-    //     }
-    // });
-
-    // Fungsi untuk menutup popup edit
-    // function closeEditPopup() {
-    //     const editPopup = document.getElementById("edit-popup");
-    //     if (editPopup) {
-    //         editPopup.style.display = "none";
-    //     }
-    // }
-
-    // Fungsi untuk membuka konfirmasi hapus
-    // function openDeletePopup(tiketId) {
-    //     document.getElementById("delete-popup").style.display = "flex";
-    //     window.tiketToDelete = tiketId;
-    // }
-
-    // function closeDeletePopup() {
-    //     document.getElementById("delete-popup").style.display = "none";
-    // }
-
-    // function confirmDelete() {
-    //     alert("Tiket dengan ID " + window.tiketToDelete + " telah dihapus.");
-    //     closeDeletePopup();
-    // }
 
     // Panggil fetchTiket saat halaman dimuat
     fetchTiket();
