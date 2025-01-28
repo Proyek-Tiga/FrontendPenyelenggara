@@ -97,8 +97,8 @@ async function fetchTotalKonser() {
         console.log("Jumlah konser sesuai user:", userKonser.length); // Debugging
 
         const konserElements = document.querySelectorAll(".cards-container .card .card-info p strong");
-        if (konserElements.length > 1) {
-            konserElements[1].textContent = userKonser.length; // Ubah jumlah konser pada card kedua
+        if (konserElements.length > 2) {
+            konserElements[2].textContent = userKonser.length; // Ubah jumlah konser pada card kedua
             console.log("Jumlah konser berhasil diperbarui di UI");
         }
 
@@ -142,8 +142,8 @@ async function fetchTotalTransaksi() {
 
         // Update jumlah transaksi pada card dashboard
         const transaksiElements = document.querySelectorAll(".cards-container .card .card-info p strong");
-        if (transaksiElements.length > 2) {
-            transaksiElements[2].textContent = userTransaksi.length; // Ubah jumlah transaksi pada card ketiga
+        if (transaksiElements.length > 3) {
+            transaksiElements[3].textContent = userTransaksi.length; // Ubah jumlah transaksi pada card ketiga
             console.log("Jumlah transaksi berhasil diperbarui di UI");
         }
 
@@ -181,14 +181,19 @@ async function fetchTotalTiket() {
             return;
         }
 
+        // Debug: Cek user_id dalam data
+        data.forEach((tiket, index) => {
+            console.log(`Tiket ${index + 1}: User ID - ${tiket.user_id}, ID Tiket - ${tiket.id}`);
+        });
+
         // Filter tiket berdasarkan user_id
         const userTiket = data.filter(tiket => String(tiket.user_id) === String(userId));
         console.log("Jumlah tiket sesuai user:", userTiket.length); // Debugging
 
         // Update jumlah tiket pada card dashboard
         const tiketElements = document.querySelectorAll(".cards-container .card .card-info p strong");
-        if (tiketElements.length > 3) {
-            tiketElements[3].textContent = userTiket.length; // Ubah jumlah tiket pada card keempat
+        if (tiketElements.length > 1) {
+            tiketElements[1].textContent = userTiket.length; // Ubah jumlah tiket pada card keempat
             console.log("Jumlah tiket berhasil diperbarui di UI");
         }
 
