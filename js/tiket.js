@@ -166,21 +166,54 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Fungsi untuk membuka popup edit dengan data yang sudah ada
-    function openEditPopup(tiketId, konserId, namaTiket, harga, jumlahTiket) {
+    window.openEditPopup = async function (tiketId, konserId, namaTiket, harga, jumlahTiket) {
         document.getElementById("edit-popup").style.display = "flex";
-        document.getElementById("edit-konser").value = konserId;
+
+        // Pastikan input teks terisi dengan benar
         document.getElementById("edit-nama-tiket").value = namaTiket;
         document.getElementById("edit-harga").value = harga;
         document.getElementById("edit-jumlah").value = jumlahTiket;
 
         // Simpan tiketId ke atribut data agar bisa digunakan saat menyimpan perubahan
         document.getElementById("edit-popup").setAttribute("data-tiket-id", tiketId);
-    }
+
+        try {
+            const userId = getUserIdFromToken(token);
+            const response = await fetch("https://tiket-backend-theta.vercel.app/api/konser", {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+            let konserList = await response.json();
+            konserList = konserList.filter(konser => konser.user_id === userId);
+
+            const konserDropdown = document.getElementById("edit-konser");
+            konserDropdown.innerHTML = '<option value="">-- Pilih Konser --</option>';
+
+            konserList.forEach(konser => {
+                const option = document.createElement("option");
+                option.value = konser.konser_id;
+                option.textContent = konser.nama_konser;
+                konserDropdown.appendChild(option);
+            });
+
+            // Setelah dropdown terisi, pilih konser sesuai dengan konser tiket
+            konserDropdown.value = konserId;
+        } catch (error) {
+            console.error("Error mengambil konser untuk edit:", error);
+            alert("Gagal mengambil konser. Silakan coba lagi.");
+        }
+    };
 
     // Fungsi untuk menutup popup edit
-    function closeEditPopup() {
+    window.closeEditPopup = function () {
         document.getElementById("edit-popup").style.display = "none";
-    }
+    };
 
     // Fungsi untuk menyimpan perubahan tiket
     document.querySelector("#edit-popup .btn-submit").addEventListener("click", async function (event) {
@@ -216,7 +249,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             alert("Tiket berhasil diperbarui!");
             closeEditPopup();
-            fetchTiket();
+            fetchTiket();  // Perbarui daftar tiket setelah edit
         } catch (error) {
             console.error("Error memperbarui tiket:", error);
             alert("Gagal memperbarui tiket. Silakan coba lagi.");
